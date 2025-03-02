@@ -3,87 +3,138 @@
         {
             "name": "Apple",
             "description": "Nodes to automate Apple products",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-apple.git"
+            "repo_id": "nodetool-ai/nodetool-apple",
+            "namespaces": [
+                "nodetool.nodes.apple"
+            ]
         },
         {
             "name": "Comfy",
             "description": "Stable Diffusion nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-comfy.git"
+            "repo_id": "nodetool-ai/nodetool-comfy",
+            "namespaces": [
+                "nodetool.nodes.comfy"
+            ]
         },
         {
             "name": "HuggingFace",
             "description": "HuggingFace nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-huggingface.git"
+            "repo_id": "nodetool-ai/nodetool-huggingface",
+            "namespaces": [
+                "nodetool.nodes.huggingface"
+            ]
         },
         {
             "name": "Audio",
             "description": "Audio nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-audio.git"
+            "repo_id": "nodetool-ai/nodetool-lib-audio",
+            "namespaces": [
+                "nodetool.nodes.lib.audio"
+            ]
         },
         {
             "name": "Data",
             "description": "Data nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-data.git"
+            "repo_id": "nodetool-ai/nodetool-lib-data",
+            "namespaces": [
+                "nodetool.nodes.lib.data"
+            ]
         },
         {
             "name": "File",
             "description": "File nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-file.git"
+            "repo_id": "nodetool-ai/nodetool-lib-file",
+            "namespaces": [
+                "nodetool.nodes.lib.file"
+            ]
         },
         {
             "name": "Network",
             "description": "Network nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-network.git"
+            "repo_id": "nodetool-ai/nodetool-lib-network",
+            "namespaces": [
+                "nodetool.nodes.lib.network"
+            ]
         },
         {
             "name": "Image",
             "description": "Image nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-image.git"
+            "repo_id": "nodetool-ai/nodetool-lib-image",
+            "namespaces": [
+                "nodetool.nodes.lib.image"
+            ]
         },
         {
             "name": "ML",
             "description": "ML nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-ml.git"
+            "repo_id": "nodetool-ai/nodetool-lib-ml",
+            "namespaces": [
+                "nodetool.nodes.lib.ml"
+            ]
         },
         {
             "name": "OpenAI",
             "description": "OpenAI nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-openai.git"
+            "repo_id": "nodetool-ai/nodetool-openai",
+            "namespaces": [
+                "nodetool.nodes.openai"
+            ]
         },
         {
             "name": "Replicate",
             "description": "Replicate nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-replicate.git"
+            "repo_id": "nodetool-ai/nodetool-replicate",
+            "namespaces": [
+                "nodetool.nodes.replicate"
+            ]
         },
         {
             "name": "Fal",
             "description": "Fal nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-fal.git"
+            "repo_id": "nodetool-ai/nodetool-fal",
+            "namespaces": [
+                "nodetool.nodes.fal"
+            ]
         },
         {
             "name": "AIME",
             "description": "AIME nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-aime.git"
+            "repo_id": "nodetool-ai/nodetool-aime",
+            "namespaces": [
+                "nodetool.nodes.aime"
+            ]
         },
         {
             "name": "ElevenLabs",
             "description": "ElevenLabs nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-elevenlabs.git"
+            "repo_id": "nodetool-ai/nodetool-elevenlabs",
+            "namespaces": [
+                "nodetool.nodes.elevenlabs"
+            ]
         },
         {
             "name": "Anthropic",
             "description": "Anthropic nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-anthropic.git"
+            "repo_id": "nodetool-ai/nodetool-anthropic",
+            "namespaces": [
+                "nodetool.nodes.anthropic"
+            ]
         },
         {
             "name": "Chroma",
             "description": "Chroma nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-chroma.git"
+            "repo_id": "nodetool-ai/nodetool-chroma",
+            "namespaces": [
+                "nodetool.nodes.chroma"
+            ]
         },
         {
             "name": "Google",
             "description": "Google nodes",
-            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-google.git"
+            "repo_id": "nodetool-ai/nodetool-google",
+            "namespaces": [
+                "nodetool.nodes.google"
+            ]
         }
     ]
 }
