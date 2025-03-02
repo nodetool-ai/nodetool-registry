@@ -1,0 +1,36 @@
+{
+    "packages": [
+        {
+            "name": "nodetool-apple",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-apple.git"
+        },
+        {
+            "name": "nodetool-comfy",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-comfy.git"
+        },
+        {
+            "name": "nodetool-huggingface",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-huggingface.git"
+        },
+        {
+            "name": "nodetool-lib-audio",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-audio.git"
+        },
+        {
+            "name": "nodetool-lib-data",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-data.git"
+        },
+        {
+            "name": "nodetool-lib-file",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-file.git"
+        },
+        {
+            "name": "nodetool-lib-image",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-image.git"
+        },
+        {
+            "name": "nodetool-lib-ml",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-ml.git"
+        }
+    ]
+}
