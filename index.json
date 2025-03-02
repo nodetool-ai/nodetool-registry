@@ -69,6 +69,21 @@
             "name": "ElevenLabs",
             "description": "ElevenLabs nodes",
             "repo_id": "https://github.com/nodetool-ai/nodetool-lib-elevenlabs.git"
+        },
+        {
+            "name": "Anthropic",
+            "description": "Anthropic nodes",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-anthropic.git"
+        },
+        {
+            "name": "Chroma",
+            "description": "Chroma nodes",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-chroma.git"
+        },
+        {
+            "name": "Google",
+            "description": "Google nodes",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-google.git"
         }
     ]
 }
