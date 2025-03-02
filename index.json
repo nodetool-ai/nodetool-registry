@@ -1,36 +1,74 @@
 {
     "packages": [
         {
-            "name": "nodetool-apple",
+            "name": "Apple",
+            "description": "Nodes to automate Apple products",
             "repo_id": "https://github.com/nodetool-ai/nodetool-apple.git"
         },
         {
-            "name": "nodetool-comfy",
+            "name": "Comfy",
+            "description": "Stable Diffusion nodes",
             "repo_id": "https://github.com/nodetool-ai/nodetool-comfy.git"
         },
         {
-            "name": "nodetool-huggingface",
+            "name": "HuggingFace",
+            "description": "HuggingFace nodes",
             "repo_id": "https://github.com/nodetool-ai/nodetool-huggingface.git"
         },
         {
-            "name": "nodetool-lib-audio",
+            "name": "Audio",
+            "description": "Audio nodes",
             "repo_id": "https://github.com/nodetool-ai/nodetool-lib-audio.git"
         },
         {
-            "name": "nodetool-lib-data",
+            "name": "Data",
+            "description": "Data nodes",
             "repo_id": "https://github.com/nodetool-ai/nodetool-lib-data.git"
         },
         {
-            "name": "nodetool-lib-file",
+            "name": "File",
+            "description": "File nodes",
             "repo_id": "https://github.com/nodetool-ai/nodetool-lib-file.git"
         },
         {
-            "name": "nodetool-lib-image",
+            "name": "Network",
+            "description": "Network nodes",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-network.git"
+        },
+        {
+            "name": "Image",
+            "description": "Image nodes",
             "repo_id": "https://github.com/nodetool-ai/nodetool-lib-image.git"
         },
         {
-            "name": "nodetool-lib-ml",
+            "name": "ML",
+            "description": "ML nodes",
             "repo_id": "https://github.com/nodetool-ai/nodetool-lib-ml.git"
+        },
+        {
+            "name": "OpenAI",
+            "description": "OpenAI nodes",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-openai.git"
+        },
+        {
+            "name": "Replicate",
+            "description": "Replicate nodes",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-replicate.git"
+        },
+        {
+            "name": "Fal",
+            "description": "Fal nodes",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-fal.git"
+        },
+        {
+            "name": "AIME",
+            "description": "AIME nodes",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-aime.git"
+        },
+        {
+            "name": "ElevenLabs",
+            "description": "ElevenLabs nodes",
+            "repo_id": "https://github.com/nodetool-ai/nodetool-lib-elevenlabs.git"
         }
     ]
 }
