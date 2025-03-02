@@ -3,7 +3,7 @@
         {
             "name": "Base Nodes",
             "description": "Base nodes",
-            "repo_id": "nodetool-ai/nodetool-lib-base",
+            "repo_id": "nodetool-ai/nodetool-base",
             "namespaces": [
                 "nodetool.nodes.nodetool"
             ]
