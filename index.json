@@ -1,6 +1,14 @@
 {
     "packages": [
         {
+            "name": "Base Nodes",
+            "description": "Base nodes",
+            "repo_id": "nodetool-ai/nodetool-lib-base",
+            "namespaces": [
+                "nodetool.nodes.nodetool"
+            ]
+        },
+        {
             "name": "Apple",
             "description": "Nodes to automate Apple products",
             "repo_id": "nodetool-ai/nodetool-apple",
