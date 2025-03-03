@@ -15,6 +15,8 @@ The primary interface for managing packages is through the Nodetool UI, which pr
 - Update packages
 - View package information and documentation
 
+![Packages](packages.png)
+
 ### CLI Usage (Advanced)
 
 The CLI tool is available for advanced users who need direct access to package management operations. This can be useful for:
