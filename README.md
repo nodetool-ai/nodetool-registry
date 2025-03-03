@@ -74,17 +74,19 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "nodetool-lib-data"
-version = "0.6.0"
-description = "Nodetool nodes for data processing."
+name = "your-package"
+version = "0.1.0"
+description = "Short description about your package"
 readme = "README.md"
-authors = ["Matthias Georgi <matti.georgi@gmail.com>"]
+authors = ["Your name <your@email.com>"]
 packages = [{ include = "nodetool", from = "src" }]
 package-mode = true
 
 [tool.poetry.dependencies]
 python = "^3.10"
 nodetool-core = { git = "https://github.com/nodetool-ai/nodetool-core.git", rev = "main" }
+
+# add your package dependencies
 
 ```
 
@@ -100,8 +102,8 @@ class MyAgent(BaseNode):
 ```
 
 4. Register your package in the Nodetool registry:
-   - Fork the [nodetool-registry](https://github.com/nodetool-ai/nodetool-registry) repository
-   - Add your package information to `index.json`
+   - Fork this repository
+   - Add your package information to [index.json](index.json)
    - Submit a pull request
 
 ### Package Requirements
@@ -111,8 +113,6 @@ Your package should:
 - Follow Python packaging best practices
 - Include clear documentation for each node
 - Provide example usage
-- Include appropriate tests
-- Use semantic versioning
 
 ### Testing Your Package
 
@@ -140,31 +140,6 @@ The Nodetool package registry is hosted at [nodetool-registry](https://github.co
 - Installation instructions
 - Version information
 - Node documentation
-
-## Troubleshooting
-
-Common issues and solutions:
-
-1. **Package Installation Fails**
-
-   - Check your internet connection
-   - Verify the package name is correct
-   - Ensure you have the latest version of Nodetool
-
-2. **Nodes Not Appearing**
-
-   - Verify package installation was successful
-   - Check package namespaces are correctly configured
-   - Restart Nodetool
-
-3. **Update Issues**
-   - Clear package cache
-   - Check for conflicting dependencies
-   - Verify package compatibility
-
-## Contributing
-
-We welcome contributions to the Nodetool ecosystem! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more information.
 
 ## License
 
