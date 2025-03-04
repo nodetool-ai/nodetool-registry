@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Nodetool Package Management System is designed to handle the installation, management, and distribution of node packages within the Nodetool ecosystem. While most package management operations are handled through the Nodetool UI, this CLI tool provides direct access for advanced users and node developers.
+The Nodetool Package Management System is designed to handle the installation, management, and distribution of node packages within the Nodetool ecosystem. Package installation is handled by pip, while the Nodetool UI and CLI tools provide interfaces for discovering and managing node packages.
 
 ## For Users
 
@@ -11,7 +11,7 @@ The Nodetool Package Management System is designed to handle the installation, m
 The primary interface for managing packages is through the Nodetool UI, which provides a user-friendly way to:
 
 - Browse available node packages
-- Install/uninstall packages
+- Install/uninstall packages (using pip under the hood)
 - Update packages
 - View package information and documentation
 
@@ -34,17 +34,14 @@ nodetool-package list
 # List available packages in the registry
 nodetool-package list --available
 
-# Install a package
-nodetool-package install owner/project
-
-# Uninstall a package
-nodetool-package uninstall owner/project
-
-# Update a package
-nodetool-package update owner/project
-
 # Show detailed package information
 nodetool-package info owner/project
+
+# Scan current directory for nodes and create metadata
+nodetool-package scan
+
+# Scan with verbose output
+nodetool-package scan --verbose
 ```
 
 ## For Node Developers
@@ -59,10 +56,10 @@ To create a package that can be installed in Nodetool:
 your-package/
 ├── pyproject.toml
 ├── src/
-│ └── your_package/
-│ ├── init.py
-│ └── nodes/
-│ └── your_nodes.py
+│   └── your_package/
+│       ├── __init__.py
+│       └── nodes/
+│           └── your_nodes.py
 └── README.md
 ```
 
@@ -79,29 +76,39 @@ version = "0.1.0"
 description = "Short description about your package"
 readme = "README.md"
 authors = ["Your name <your@email.com>"]
-packages = [{ include = "nodetool", from = "src" }]
-package-mode = true
+packages = [{ include = "your_package", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 nodetool-core = { git = "https://github.com/nodetool-ai/nodetool-core.git", rev = "main" }
-
 # add your package dependencies
-
 ```
 
 3. Create your node classes:
 
 ```python
-class MyAgent(BaseNode):
-    prompt: Field(default="Build me a website for my business.")
+from pydantic import Field
+from nodetool.workflows.base_node import BaseNode
+
+class MyNode(BaseNode):
+    """Example node implementation"""
+
+    prompt: str = Field(
+        default="Build me a website for my business.",
+        description="Input prompt for the node"
+    )
 
     async def process(self, context: ProcessingContext) -> str:
-        llm = MyLLM()
-        return llm.generate(self.prompt)
+        # Your node implementation here
+        return "Node output"
 ```
 
-4. Register your package in the Nodetool registry:
+4. Generate node metadata:
+
+   - Run `nodetool-package scan` in your package repository
+   - This will create `nodes.json` files containing metadata for your nodes
+
+5. Register your package in the Nodetool registry:
    - Fork this repository
    - Add your package information to [index.json](index.json)
    - Submit a pull request
@@ -113,6 +120,7 @@ Your package should:
 - Follow Python packaging best practices
 - Include clear documentation for each node
 - Provide example usage
+- Include proper node metadata (generated via `nodetool-package scan`)
 
 ### Testing Your Package
 
@@ -124,22 +132,26 @@ Before submitting to the registry:
 pip install -e .
 ```
 
-2. Test installation in Nodetool:
-
-```bash
-nodetool-package install your-username/your-package --local /path/to/package --namespace nodetool.nodes.yourpackage
-```
+2. Restart Nodetool UI
 
 3. Verify your nodes appear in the Nodetool UI
 
 ## Package Registry
 
-The Nodetool package registry is hosted at [nodetool-registry](https://github.com/nodetool-ai/nodetool-registry). It contains:
+The Nodetool package registry is hosted at [nodetool-registry](https://github.com/nodetool-ai/nodetool-registry). The registry maintains:
 
-- Package metadata
+- Package metadata in `index.json`
 - Installation instructions
 - Version information
 - Node documentation
+
+Each package in the registry includes:
+
+- Name
+- Description
+- Repository ID (owner/project format)
+- Namespaces provided
+- Node metadata
 
 ## License
 
