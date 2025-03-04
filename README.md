@@ -127,7 +127,7 @@ pip install -e .
 2. Test installation in Nodetool:
 
 ```bash
-nodetool-package install your-username/your-package --local /path/to/package
+nodetool-package install your-username/your-package --local /path/to/package --namespace nodetool.nodes.yourpackage
 ```
 
 3. Verify your nodes appear in the Nodetool UI
