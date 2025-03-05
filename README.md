@@ -17,13 +17,9 @@ The primary interface for managing packages is through the Nodetool UI, which pr
 
 ![Packages](packages.png)
 
-### CLI Usage (Advanced)
+## For Node Developers
 
-The CLI tool is available for advanced users who need direct access to package management operations. This can be useful for:
-
-- Troubleshooting installation issues
-- Manual package management
-- System administration tasks
+The CLI tool is available for developers to create and manage nodetool packages.
 
 Basic commands:
 
@@ -39,9 +35,10 @@ nodetool-package scan
 
 # Scan with verbose output
 nodetool-package scan --verbose
-```
 
-## For Node Developers
+# Initialize a new Nodetool package
+nodetool-package init
+```
 
 ### Creating a Node Package
 
@@ -49,39 +46,20 @@ To create a package that can be installed in Nodetool:
 
 IMPORTANT: package name MUST start with `nodetool-`
 
-1. Create a new Python package with the following structure:
+1. Create a new folder for your project
 
-```
-your-package/
-├── pyproject.toml
-├── src/
-│   └── your_package/
-│       ├── __init__.py
-│       └── nodes/
-│           └── your_nodes.py
-└── README.md
-```
+2. Run the `nodetool-package init` command:
 
-2. Configure your `pyproject.toml`:
-
-```toml
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
-name = "your-package"
-version = "0.1.0"
-description = "Short description about your package"
-readme = "README.md"
-authors = ["Your name <your@email.com>"]
-packages = [{ include = "your_package", from = "src" }]
-include = ["src/nodetool/package-metadata/your-package.json"]
-
-[tool.poetry.dependencies]
-python = "^3.10"
-nodetool-core = { git = "https://github.com/nodetool-ai/nodetool-core.git", rev = "main" }
-# add your package dependencies
+```bash
+$ nodetool-package init
+Project name: nodetool-example
+Description: My example Nodetool package
+Author (name <email>): John Smith <john@example.com>
+✅ Successfully initialized Nodetool project
+Created:
+  - pyproject.toml
+  - src/nodetool/nodes/nodetool-example
+  - src/nodetool/package_metadata/
 ```
 
 3. Create your node classes:
@@ -108,7 +86,7 @@ class MyNode(BaseNode):
    - Run `nodetool-package scan` in your package repository
    - This will create `your_package.json` file in `src/nodetool/package_metadata`
 
-5. Publish your project to a Github repository
+5. Commit and publish your project to a Github repository
 
 6. Register your package in the Nodetool registry:
    - Fork this repository
