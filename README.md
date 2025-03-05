@@ -34,9 +34,6 @@ nodetool-package list
 # List available packages in the registry
 nodetool-package list --available
 
-# Show detailed package information
-nodetool-package info owner/project
-
 # Scan current directory for nodes and create metadata
 nodetool-package scan
 
@@ -77,6 +74,7 @@ description = "Short description about your package"
 readme = "README.md"
 authors = ["Your name <your@email.com>"]
 packages = [{ include = "your_package", from = "src" }]
+include = ["src/nodetool/package-metadata/your-package.json"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -106,9 +104,11 @@ class MyNode(BaseNode):
 4. Generate node metadata:
 
    - Run `nodetool-package scan` in your package repository
-   - This will create `nodes.json` files containing metadata for your nodes
+   - This will create `your_package.json` file in `src/nodetool/package_metadata`
 
-5. Register your package in the Nodetool registry:
+5. Publisha a Github repository
+
+6. Register your package in the Nodetool registry:
    - Fork this repository
    - Add your package information to [index.json](index.json)
    - Submit a pull request
