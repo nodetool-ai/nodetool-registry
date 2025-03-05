@@ -47,6 +47,8 @@ nodetool-package scan --verbose
 
 To create a package that can be installed in Nodetool:
 
+IMPORTANT: package name MUST start with `nodetool-`
+
 1. Create a new Python package with the following structure:
 
 ```
@@ -106,7 +108,7 @@ class MyNode(BaseNode):
    - Run `nodetool-package scan` in your package repository
    - This will create `your_package.json` file in `src/nodetool/package_metadata`
 
-5. Publisha a Github repository
+5. Publish your project to a Github repository
 
 6. Register your package in the Nodetool registry:
    - Fork this repository
