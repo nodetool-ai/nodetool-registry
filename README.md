@@ -1,65 +1,65 @@
-# Nodetool Package Management System
+# Nodetool Packs Registry
 
 ## Overview
 
-The Nodetool Package Management System is designed to handle the installation, management, and distribution of node packages within the Nodetool ecosystem. Package installation is handled by pip, while the Nodetool UI and CLI tools provide interfaces for discovering and managing node packages.
+The Nodetool Packs Registry manages the installation, management, and distribution of node packs within the Nodetool ecosystem. Pack installation is handled by pip, while the Nodetool UI and CLI tools provide interfaces for discovering and managing node packs.
 
 ## For Users
 
-### Package Management in Nodetool UI
+### Pack Management in Nodetool UI
 
-The primary interface for managing packages is through the Nodetool UI, which provides a user-friendly way to:
+The primary interface for managing packs is through the Nodetool UI, which provides a user-friendly way to:
 
-- Browse available node packages
-- Install/uninstall packages (using pip under the hood)
-- Update packages
-- View package information and documentation
+- Browse available node packs
+- Install/uninstall packs (using pip under the hood)
+- Update packs
+- View pack information and documentation
 
-![Packages](packages.png)
+![Packs](packages.png)
 
 ## For Node Developers
 
-The CLI tool is available for developers to create and manage nodetool packages.
+The CLI tool is available for developers to create and manage Nodetool packs.
 
 Basic commands:
 
 ```bash
-# List installed packages
-nodetool-package list
+# List installed packs
+nodetool-pack list
 
-# List available packages in the registry
-nodetool-package list --available
+# List available packs in the registry
+nodetool-pack list --available
 
 # Scan current directory for nodes and create metadata
-nodetool-package scan
+nodetool-pack scan
 
 # Scan with verbose output
-nodetool-package scan --verbose
+nodetool-pack scan --verbose
 
-# Initialize a new Nodetool package
-nodetool-package init
+# Initialize a new Nodetool pack
+nodetool-pack init
 ```
 
-### Creating a Node Package
+### Creating a Node Pack
 
-To create a package that can be installed in Nodetool:
+To create a pack that can be installed in Nodetool:
 
-IMPORTANT: package name MUST start with `nodetool-`
+IMPORTANT: pack name MUST start with `nodetool-`
 
 1. Create a new folder for your project
 
-2. Run the `nodetool-package init` command:
+2. Run the `nodetool-pack init` command:
 
 ```bash
-$ nodetool-package init
+$ nodetool-pack init
 Project name: nodetool-example
-Description: My example Nodetool package
+Description: My example Nodetool pack
 Author (name <email>): John Smith <john@example.com>
 ✅ Successfully initialized Nodetool project
 Created:
   - pyproject.toml
   - src/nodetool/nodes/nodetool-example
-  - src/nodetool/package_metadata/
+  - src/nodetool/pack_metadata/
 ```
 
 3. Create your node classes:
@@ -81,32 +81,32 @@ class MyNode(BaseNode):
         return "Node output"
 ```
 
-4. Generate node metadata:
+4. Generate pack metadata:
 
-   - Run `nodetool-package scan` in your package repository
-   - This will create `your_package.json` file in `src/nodetool/package_metadata`
+   - Run `nodetool-pack scan` in your pack repository
+   - This will create `your_pack.json` file in `src/nodetool/pack_metadata`
 
 5. Commit and publish your project to a Github repository
 
-6. Register your package in the Nodetool registry:
+6. Register your pack in the Nodetool registry:
    - Fork this repository
-   - Add your package information to [index.json](index.json)
+   - Add your pack information to [index.json](index.json)
    - Submit a pull request
 
-### Package Requirements
+### Pack Requirements
 
-Your package should:
+Your pack should:
 
 - Follow Python packaging best practices
 - Include clear documentation for each node
 - Provide example usage
-- Include proper node metadata (generated via `nodetool-package scan`)
+- Include proper node metadata (generated via `nodetool-pack scan`)
 
-### Testing Your Package
+### Testing Your Pack
 
 Before submitting to the registry:
 
-1. Install your package locally:
+1. Install your pack locally:
 
 ```bash
 pip install -e .
@@ -116,16 +116,16 @@ pip install -e .
 
 3. Verify your nodes appear in the Nodetool UI
 
-## Package Registry
+## Pack Registry
 
-The Nodetool package registry is hosted at [nodetool-registry](https://github.com/nodetool-ai/nodetool-registry). The registry maintains:
+The Nodetool packs registry is hosted at [nodetool-registry](https://github.com/nodetool-ai/nodetool-registry). The registry maintains:
 
-- Package metadata in `index.json`
+- Pack metadata in `index.json`
 - Installation instructions
 - Version information
 - Node documentation
 
-Each package in the registry includes:
+Each pack in the registry includes:
 
 - Name
 - Description
@@ -135,4 +135,4 @@ Each package in the registry includes:
 
 ## License
 
-This package management system is part of the Nodetool project. See the main [project repository](https://github.com/nodetool-ai/nodetool) for license information.
+This pack management system is part of the Nodetool project. See the main [project repository](https://github.com/nodetool-ai/nodetool) for license information.
