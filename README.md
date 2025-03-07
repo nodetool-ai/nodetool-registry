@@ -25,19 +25,19 @@ Basic commands:
 
 ```bash
 # List installed packs
-nodetool-pack list
+nodetool list
 
 # List available packs in the registry
-nodetool-pack list --available
+nodetool list --available
 
 # Scan current directory for nodes and create metadata
-nodetool-pack scan
+nodetool scan
 
 # Scan with verbose output
-nodetool-pack scan --verbose
+nodetool scan --verbose
 
 # Initialize a new Nodetool pack
-nodetool-pack init
+nodetool init
 ```
 
 ### Creating a Node Pack
@@ -48,10 +48,10 @@ IMPORTANT: pack name MUST start with `nodetool-`
 
 1. Create a new folder for your project
 
-2. Run the `nodetool-pack init` command:
+2. Run the `nodetool init` command:
 
 ```bash
-$ nodetool-pack init
+$ nodetool init
 Project name: nodetool-example
 Description: My example Nodetool pack
 Author (name <email>): John Smith <john@example.com>
@@ -83,7 +83,7 @@ class MyNode(BaseNode):
 
 4. Generate pack metadata:
 
-   - Run `nodetool-pack scan` in your pack repository
+   - Run `nodetool scan` in your pack repository
    - This will create `your_pack.json` file in `src/nodetool/pack_metadata`
 
 5. Commit and publish your project to a Github repository
@@ -100,7 +100,7 @@ Your pack should:
 - Follow Python packaging best practices
 - Include clear documentation for each node
 - Provide example usage
-- Include proper node metadata (generated via `nodetool-pack scan`)
+- Include proper node metadata (generated via `nodetool scan`)
 
 ### Testing Your Pack
 
