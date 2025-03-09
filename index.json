@@ -129,6 +129,14 @@
             ]
         },
         {
+            "name": "Ollama",
+            "description": "Ollama nodes",
+            "repo_id": "nodetool-ai/nodetool-ollama",
+            "namespaces": [
+                "nodetool.nodes.ollama"
+            ]
+        },
+        {
             "name": "Chroma",
             "description": "Chroma nodes",
             "repo_id": "nodetool-ai/nodetool-chroma",
