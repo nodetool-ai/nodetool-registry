@@ -17,14 +17,6 @@
             ]
         },
         {
-            "name": "Comfy",
-            "description": "Stable Diffusion nodes",
-            "repo_id": "nodetool-ai/nodetool-comfy",
-            "namespaces": [
-                "nodetool.nodes.comfy"
-            ]
-        },
-        {
             "name": "HuggingFace",
             "description": "HuggingFace nodes",
             "repo_id": "nodetool-ai/nodetool-huggingface",
@@ -50,7 +42,7 @@
         },
         {
             "name": "File",
-            "description": "File nodes",
+            "description": "Support for file types",
             "repo_id": "nodetool-ai/nodetool-lib-file",
             "namespaces": [
                 "nodetool.nodes.lib.file"
@@ -58,7 +50,7 @@
         },
         {
             "name": "Network",
-            "description": "Network nodes",
+            "description": "Support for http, imap, rss and beautifulsoup",
             "repo_id": "nodetool-ai/nodetool-lib-network",
             "namespaces": [
                 "nodetool.nodes.lib.network"
@@ -66,7 +58,7 @@
         },
         {
             "name": "Image",
-            "description": "Image nodes",
+            "description": "Support for image manipulation",
             "repo_id": "nodetool-ai/nodetool-lib-image",
             "namespaces": [
                 "nodetool.nodes.lib.image"
@@ -74,7 +66,7 @@
         },
         {
             "name": "ML",
-            "description": "ML nodes",
+            "description": "Support for scikit-learn and statsmodels",
             "repo_id": "nodetool-ai/nodetool-lib-ml",
             "namespaces": [
                 "nodetool.nodes.lib.ml"
@@ -82,7 +74,7 @@
         },
         {
             "name": "OpenAI",
-            "description": "OpenAI nodes",
+            "description": "Support for OpenAI TextToSpeech and Transcription",
             "repo_id": "nodetool-ai/nodetool-openai",
             "namespaces": [
                 "nodetool.nodes.openai"
@@ -90,7 +82,7 @@
         },
         {
             "name": "Replicate",
-            "description": "Replicate nodes",
+            "description": "Support for a large number of Replicate models",
             "repo_id": "nodetool-ai/nodetool-replicate",
             "namespaces": [
                 "nodetool.nodes.replicate"
@@ -98,7 +90,7 @@
         },
         {
             "name": "Fal",
-            "description": "Fal nodes",
+            "description": "Support for a large number of Fal models",
             "repo_id": "nodetool-ai/nodetool-fal",
             "namespaces": [
                 "nodetool.nodes.fal"
@@ -114,7 +106,7 @@
         },
         {
             "name": "ElevenLabs",
-            "description": "ElevenLabs nodes",
+            "description": "Support for ElevenLabs TextToSpeech",
             "repo_id": "nodetool-ai/nodetool-elevenlabs",
             "namespaces": [
                 "nodetool.nodes.elevenlabs"
@@ -126,14 +118,6 @@
             "repo_id": "nodetool-ai/nodetool-anthropic",
             "namespaces": [
                 "nodetool.nodes.anthropic"
-            ]
-        },
-        {
-            "name": "Ollama",
-            "description": "Ollama nodes",
-            "repo_id": "nodetool-ai/nodetool-ollama",
-            "namespaces": [
-                "nodetool.nodes.ollama"
             ]
         },
         {
