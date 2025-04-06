@@ -111,30 +111,6 @@
             "namespaces": [
                 "nodetool.nodes.elevenlabs"
             ]
-        },
-        {
-            "name": "Anthropic",
-            "description": "Anthropic nodes",
-            "repo_id": "nodetool-ai/nodetool-anthropic",
-            "namespaces": [
-                "nodetool.nodes.anthropic"
-            ]
-        },
-        {
-            "name": "Chroma",
-            "description": "Chroma nodes",
-            "repo_id": "nodetool-ai/nodetool-chroma",
-            "namespaces": [
-                "nodetool.nodes.chroma"
-            ]
-        },
-        {
-            "name": "Google",
-            "description": "Google nodes",
-            "repo_id": "nodetool-ai/nodetool-google",
-            "namespaces": [
-                "nodetool.nodes.google"
-            ]
         }
     ]
 }
