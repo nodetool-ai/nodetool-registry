@@ -10,7 +10,7 @@
         },
         {
             "name": "Apple",
-            "description": "Nodes to automate Apple products",
+            "description": "Nodes to automate MacOS services and apps",
             "repo_id": "nodetool-ai/nodetool-apple",
             "namespaces": [
                 "nodetool.nodes.apple"
@@ -49,14 +49,6 @@
             ]
         },
         {
-            "name": "Network",
-            "description": "Support for http, imap, rss and beautifulsoup",
-            "repo_id": "nodetool-ai/nodetool-lib-network",
-            "namespaces": [
-                "nodetool.nodes.lib.network"
-            ]
-        },
-        {
             "name": "Image",
             "description": "Support for image manipulation",
             "repo_id": "nodetool-ai/nodetool-lib-image",
@@ -70,14 +62,6 @@
             "repo_id": "nodetool-ai/nodetool-lib-ml",
             "namespaces": [
                 "nodetool.nodes.lib.ml"
-            ]
-        },
-        {
-            "name": "OpenAI",
-            "description": "Support for OpenAI TextToSpeech and Transcription",
-            "repo_id": "nodetool-ai/nodetool-openai",
-            "namespaces": [
-                "nodetool.nodes.openai"
             ]
         },
         {
