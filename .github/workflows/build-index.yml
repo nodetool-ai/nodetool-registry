@@ -1,4 +1,40 @@
 # .github/workflows/build-index.yml
+# NodeTool Registry – Build Package Index
+#
+# Purpose:
+#   Build and publish the static Python package index for NodeTool packages
+#   to GitHub Pages for pip-compatible installs via the simple/ index.
+#
+# Triggers:
+#   - repository_dispatch: "package-released" events from package repos
+#   - workflow_dispatch: manual runs with optional input force_rebuild
+#   - schedule: daily at 06:00 UTC
+#
+# Permissions (job-level):
+#   contents: write   # needed for gh-pages publishing
+#   pages: write      # deploy to Pages
+#   id-token: write   # OIDC token if required by actions
+#
+# Inputs / Env:
+#   - GITHUB_TOKEN (secret): used for API calls and deploy
+#   - inputs.force_rebuild (boolean): force full rebuild
+#
+# Tooling:
+#   - Python 3.11
+#   - pip deps: requests, packaging, jinja2
+#   - scripts:
+#       scripts/build_index.py       # builds ./dist simple index from releases
+#       scripts/generate_metadata.py # writes metadata into ./dist
+#
+# Outputs / Deployment:
+#   - Publishes ./dist to GitHub Pages (gh-pages branch)
+#   - Simple index URL: https://nodetool-ai.github.io/nodetool-registry/simple/
+#   - Step summary includes deployment status and package count
+#
+# Maintenance:
+#   - See docs in nodetool-registry/deployment-guide.md
+#   - Keep cron cadence and script interfaces in sync
+#
 # Main workflow to build and deploy the package index
 
 name: Build Package Index
@@ -7,19 +43,19 @@ on:
   # Trigger when any NodeTool package creates a release
   repository_dispatch:
     types: [package-released]
-  
+
   # Manual trigger
   workflow_dispatch:
     inputs:
       force_rebuild:
-        description: 'Force rebuild entire index'
+        description: "Force rebuild entire index"
         required: false
-        default: 'false'
+        default: "false"
         type: boolean
-  
+
   # Scheduled rebuild (daily)
   schedule:
-    - cron: '0 6 * * *'  # 6 AM UTC daily
+    - cron: "0 6 * * *" # 6 AM UTC daily
 
 jobs:
   build-index:
@@ -28,40 +64,40 @@ jobs:
       contents: write
       pages: write
       id-token: write
-    
+
     steps:
       - name: Checkout nodetool-registry
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
-          
+          python-version: "3.11"
+
       - name: Install dependencies
         run: |
           pip install requests packaging jinja2
-          
+
       - name: Build package index
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE_REBUILD: ${{ github.event.inputs.force_rebuild }}
         run: |
           python scripts/build_index.py --output-dir dist --github-token ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Generate index metadata
         run: |
           python scripts/generate_metadata.py --output-dir dist
-          
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           cname: nodetool-registry.github.io
-          
+
       - name: Create deployment summary
         run: |
           echo "## Package Index Deployment Summary" >> $GITHUB_STEP_SUMMARY
@@ -70,7 +106,7 @@ jobs:
           echo "📦 **Index URL**: https://nodetool-ai.github.io/nodetool-registry/simple/" >> $GITHUB_STEP_SUMMARY
           echo "⏰ **Timestamp**: $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Count packages in index
           PACKAGE_COUNT=$(find dist -name "index.html" -not -path "*/index.html" | wc -l)
           echo "📋 **Packages**: $PACKAGE_COUNT" >> $GITHUB_STEP_SUMMARY
