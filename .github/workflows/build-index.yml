@@ -85,7 +85,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE_REBUILD: ${{ github.event.inputs.force_rebuild }}
         run: |
-          python scripts/build_index.py --output-dir dist --github-token ${{ secrets.GITHUB_TOKEN }}
+          python scripts/build_index.py --output-dir dist/simple --github-token ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate index metadata
         run: |
@@ -96,7 +96,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          cname: nodetool-registry.github.io
 
       - name: Create deployment summary
         run: |
@@ -107,6 +106,6 @@ jobs:
           echo "⏰ **Timestamp**: $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Count packages in index
-          PACKAGE_COUNT=$(find dist -name "index.html" -not -path "*/index.html" | wc -l)
+          # Count packages in simple index (one index.html per package dir)
+          PACKAGE_COUNT=$(find dist/simple -mindepth 2 -maxdepth 2 -name index.html | wc -l)
           echo "📋 **Packages**: $PACKAGE_COUNT" >> $GITHUB_STEP_SUMMARY
