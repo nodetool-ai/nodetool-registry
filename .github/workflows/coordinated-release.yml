@@ -1,0 +1,225 @@
+# .github/workflows/coordinated-release.yml
+# Coordinate releases across all NodeTool packages
+
+name: Coordinated Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release across all packages (e.g., 0.6.0)'
+        required: true
+        type: string
+      release_core_only:
+        description: 'Release only nodetool-core (for core-only updates)'
+        required: false
+        default: false
+        type: boolean
+      dry_run:
+        description: 'Dry run (don\'t actually create releases)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  validate-release:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.validate.outputs.version }}
+      packages: ${{ steps.validate.outputs.packages }}
+    steps:
+      - name: Validate inputs
+        id: validate
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          
+          # Validate version format
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid version format: $VERSION (must be X.Y.Z)"
+            exit 1
+          fi
+          
+          # Define packages to release
+          if [ "${{ github.event.inputs.release_core_only }}" = "true" ]; then
+            PACKAGES='["nodetool-core"]'
+          else
+            PACKAGES='[
+              "nodetool-core",
+              "nodetool-base", 
+              "nodetool-lib-ml",
+              "nodetool-aime",
+              "nodetool-lib-file",
+              "nodetool-elevenlabs",
+              "nodetool-lib-image",
+              "nodetool-huggingface", 
+              "nodetool-fal",
+              "nodetool-replicate",
+              "nodetool-lib-audio",
+              "nodetool-apple",
+              "nodetool-lib-data"
+            ]'
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
+          
+          echo "🔖 Version: $VERSION"
+          echo "📦 Packages: $(echo $PACKAGES | jq -r '. | join(", ")')"
+          echo "🧪 Dry run: ${{ github.event.inputs.dry_run }}"
+
+  trigger-releases:
+    needs: validate-release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.validate-release.outputs.packages) }}
+      max-parallel: 3  # Limit concurrent releases
+      fail-fast: false  # Don't stop if one package fails
+    
+    steps:
+      - name: Trigger release for ${{ matrix.package }}
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          echo "🚀 Triggering release for ${{ matrix.package }} v${{ needs.validate-release.outputs.version }}"
+          
+          # Trigger workflow_dispatch on the individual repository
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.RELEASE_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/nodetool-ai/${{ matrix.package }}/actions/workflows/publish-wheel.yml/dispatches \
+            -d '{
+              "ref": "main",
+              "inputs": {
+                "version": "${{ needs.validate-release.outputs.version }}",
+                "prerelease": "false"
+              }
+            }'
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ Successfully triggered release for ${{ matrix.package }}"
+          else
+            echo "❌ Failed to trigger release for ${{ matrix.package }}"
+            exit 1
+          fi
+          
+      - name: Dry run simulation for ${{ matrix.package }}
+        if: ${{ github.event.inputs.dry_run == 'true' }}
+        run: |
+          echo "🧪 [DRY RUN] Would trigger release for ${{ matrix.package }} v${{ needs.validate-release.outputs.version }}"
+          echo "🔗 Repository: https://github.com/nodetool-ai/${{ matrix.package }}"
+          echo "⚡ Workflow: publish-wheel.yml"
+          
+          # Simulate delay
+          sleep $((RANDOM % 5 + 1))
+          echo "✅ [DRY RUN] Simulated successful trigger"
+
+  wait-for-releases:
+    needs: [validate-release, trigger-releases]
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.dry_run != 'true' }}
+    steps:
+      - name: Wait for releases to complete
+        run: |
+          echo "⏳ Waiting for releases to complete..."
+          echo "This may take 10-15 minutes depending on package complexity"
+          
+          # Wait for releases (in production, you might want to poll the APIs)
+          sleep 300  # 5 minutes initial wait
+          
+          # Check release status (simplified - in production you'd check each repo)
+          PACKAGES='${{ needs.validate-release.outputs.packages }}'
+          echo "📋 Packages releasing: $(echo $PACKAGES | jq -r '. | join(", ")')"
+          
+      - name: Verify releases
+        run: |
+          VERSION="${{ needs.validate-release.outputs.version }}"
+          PACKAGES='${{ needs.validate-release.outputs.packages }}'
+          FAILED_RELEASES=()
+          
+          echo "🔍 Verifying releases for version v$VERSION"
+          
+          for package in $(echo $PACKAGES | jq -r '.[]'); do
+            echo "Checking $package..."
+            
+            # Check if release exists
+            RELEASE_URL="https://api.github.com/repos/nodetool-ai/$package/releases/tags/v$VERSION"
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$RELEASE_URL")
+            
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ $package v$VERSION released successfully"
+            else
+              echo "❌ $package v$VERSION release not found (HTTP $STATUS)"
+              FAILED_RELEASES+=("$package")
+            fi
+          done
+          
+          if [ ${#FAILED_RELEASES[@]} -gt 0 ]; then
+            echo "❌ Some releases failed: ${FAILED_RELEASES[*]}"
+            echo "Check the individual repository workflows for details"
+            exit 1
+          fi
+          
+          echo "🎉 All releases completed successfully!"
+
+  update-registry:
+    needs: [validate-release, wait-for-releases]
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.dry_run != 'true' && !failure() }}
+    steps:
+      - name: Trigger registry rebuild
+        run: |
+          echo "🔄 Triggering registry index rebuild..."
+          
+          # Trigger full index rebuild
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/nodetool-ai/nodetool-registry/actions/workflows/build-index.yml/dispatches \
+            -d '{
+              "ref": "main",
+              "inputs": {
+                "force_rebuild": "true"
+              }
+            }'
+          
+          echo "✅ Registry rebuild triggered"
+          echo "📍 Index will be available at: https://nodetool-ai.github.io/nodetool-registry/simple/"
+
+  create-release-summary:
+    needs: [validate-release, update-registry]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Create release summary
+        run: |
+          VERSION="${{ needs.validate-release.outputs.version }}"
+          PACKAGES='${{ needs.validate-release.outputs.packages }}'
+          DRY_RUN="${{ github.event.inputs.dry_run }}"
+          
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "## 🧪 Dry Run Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Would have released version**: \`v$VERSION\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## 🎉 Coordinated Release Summary" >> $GITHUB_STEP_SUMMARY  
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Released version**: \`v$VERSION\`" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Packages**:" >> $GITHUB_STEP_SUMMARY
+          for package in $(echo $PACKAGES | jq -r '.[]'); do
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "- 🧪 \`$package\` (dry run)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- ✅ [\`$package\`](https://github.com/nodetool-ai/$package/releases/tag/v$VERSION)" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+          
+          if [ "$DRY_RUN" != "true" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Installation**:" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+            echo "pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-base" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi

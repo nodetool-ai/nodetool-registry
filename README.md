@@ -2,7 +2,12 @@
 
 ## Overview
 
-The Nodetool Packs Registry manages the installation, management, and distribution of node packs within the Nodetool ecosystem. Pack installation is handled by pip, while the Nodetool UI and CLI tools provide interfaces for discovering and managing node packs.
+The Nodetool Packs Registry manages the installation, management, and distribution of node packs within the Nodetool ecosystem. The registry operates using two complementary systems:
+
+1. **Wheel-based Package Index** (PEP 503 compliant) - Hosted at `https://nodetool-ai.github.io/nodetool-registry/simple/` for fast, reliable package installation via `uv pip install`
+2. **Package Metadata Registry** (`index.json`) - Provides discovery, descriptions, and browsing functionality for the Nodetool UI
+
+Pack installation is handled by uv/pip using pre-built wheel files, while the Nodetool UI and CLI tools provide interfaces for discovering and managing node packs.
 
 ## For Users
 
@@ -10,9 +15,9 @@ The Nodetool Packs Registry manages the installation, management, and distributi
 
 The primary interface for managing packs is through the Nodetool UI, which provides a user-friendly way to:
 
-- Browse available node packs
-- Install/uninstall packs (using pip under the hood)
-- Update packs
+- Browse available node packs from the registry metadata
+- Install/uninstall packs (using uv pip with wheel index under the hood)
+- Update packs to latest wheel versions
 - View pack information and documentation
 
 ![Packs](packages.png)

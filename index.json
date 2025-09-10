@@ -1,76 +1,111 @@
 {
   "packages": [
     {
-      "name": "Base Nodes",
       "description": "Essential foundational nodes providing core functionality for data processing, flow control, and basic operations.",
-      "repo_id": "nodetool-ai/nodetool-base",
-      "namespaces": ["nodetool.nodes.nodetool"]
+      "name": "Base Nodes",
+      "namespaces": [
+        "nodetool.nodes.nodetool"
+      ],
+      "repo_id": "nodetool-ai/nodetool-base"
     },
     {
-      "name": "Apple",
       "description": "Automate macOS Calendar, Notes, Messages, Reminders, Dictionary, screenshots and system TTS.",
-      "repo_id": "nodetool-ai/nodetool-apple",
-      "namespaces": ["nodetool.nodes.apple"]
+      "name": "Apple",
+      "namespaces": [
+        "nodetool.nodes.apple"
+      ],
+      "repo_id": "nodetool-ai/nodetool-apple"
     },
     {
-      "name": "HuggingFace",
       "description": "Use a growing list of HuggingFace models from categories like vision, audio, classification, segmentation and more.",
-      "repo_id": "nodetool-ai/nodetool-huggingface",
-      "namespaces": ["nodetool.nodes.huggingface"]
+      "name": "HuggingFace",
+      "namespaces": [
+        "nodetool.nodes.huggingface"
+      ],
+      "repo_id": "nodetool-ai/nodetool-huggingface"
     },
     {
-      "name": "Audio",
       "description": "Add nodes for audio processing: synthesize, effects, cut, mix, looping, reverb, pitch-shift, FM synthesis.",
-      "repo_id": "nodetool-ai/nodetool-lib-audio",
-      "namespaces": ["nodetool.nodes.lib.audio"]
+      "name": "Audio",
+      "namespaces": [
+        "nodetool.nodes.lib.audio"
+      ],
+      "repo_id": "nodetool-ai/nodetool-lib-audio"
     },
     {
-      "name": "Data",
       "description": "Add data validators and transformers that reshape, clean and join data for ML and visualization.",
-      "repo_id": "nodetool-ai/nodetool-lib-data",
-      "namespaces": ["nodetool.nodes.lib.data"]
+      "name": "Data",
+      "namespaces": [
+        "nodetool.nodes.lib.data"
+      ],
+      "repo_id": "nodetool-ai/nodetool-lib-data"
     },
     {
-      "name": "File",
       "description": "Add nodes to extract text, tables and images from PDFs, Excel, Word or Markdown; re-format spreadsheets and convert docs with Pandoc or PyMuPDF.",
-      "repo_id": "nodetool-ai/nodetool-lib-file",
-      "namespaces": ["nodetool.nodes.lib.file"]
+      "name": "File",
+      "namespaces": [
+        "nodetool.nodes.lib.file"
+      ],
+      "repo_id": "nodetool-ai/nodetool-lib-file"
     },
     {
-      "name": "Image",
       "description": "Add nodes for image processing: filters (blur, sharpen, invert), generate SVGs, slice/merge grids.",
-      "repo_id": "nodetool-ai/nodetool-lib-image",
-      "namespaces": ["nodetool.nodes.lib.image"]
+      "name": "Image",
+      "namespaces": [
+        "nodetool.nodes.lib.image"
+      ],
+      "repo_id": "nodetool-ai/nodetool-lib-image"
     },
     {
-      "name": "ML",
       "description": "Add nodes for scikit-learn and statsmodels: estimators, classification, clustering, regression.",
-      "repo_id": "nodetool-ai/nodetool-lib-ml",
-      "namespaces": ["nodetool.nodes.lib.ml"]
+      "name": "ML",
+      "namespaces": [
+        "nodetool.nodes.lib.ml"
+      ],
+      "repo_id": "nodetool-ai/nodetool-lib-ml"
     },
     {
-      "name": "Replicate",
       "description": "Add a growing list of replicate nodes for text, audio, image, video using the replicate API.",
-      "repo_id": "nodetool-ai/nodetool-replicate",
-      "namespaces": ["nodetool.nodes.replicate"]
+      "name": "Replicate",
+      "namespaces": [
+        "nodetool.nodes.replicate"
+      ],
+      "repo_id": "nodetool-ai/nodetool-replicate"
     },
     {
-      "name": "Fal",
       "description": "Access FAL's lightning-fast generative endpoints (AnyLLM, text-to-image/video, TTS, STT).",
-      "repo_id": "nodetool-ai/nodetool-fal",
-      "namespaces": ["nodetool.nodes.fal"]
+      "name": "Fal",
+      "namespaces": [
+        "nodetool.nodes.fal"
+      ],
+      "repo_id": "nodetool-ai/nodetool-fal"
     },
     {
-      "name": "AIME",
       "description": "Add AIME API nodes for image, audio, text and translation tasks.",
-      "repo_id": "nodetool-ai/nodetool-aime",
-      "namespaces": ["nodetool.nodes.aime"]
+      "name": "AIME",
+      "namespaces": [
+        "nodetool.nodes.aime"
+      ],
+      "repo_id": "nodetool-ai/nodetool-aime"
     },
     {
-      "name": "ElevenLabs",
       "description": "Generate lifelike speech in 30+ languages from text using ElevenLabs.",
-      "repo_id": "nodetool-ai/nodetool-elevenlabs",
-      "namespaces": ["nodetool.nodes.elevenlabs"]
+      "name": "ElevenLabs",
+      "namespaces": [
+        "nodetool.nodes.elevenlabs"
+      ],
+      "repo_id": "nodetool-ai/nodetool-elevenlabs"
+    },
+    {
+      "description": "Example external package for testing polling functionality.",
+      "external": true,
+      "name": "Example External Package",
+      "namespaces": [
+        "nodetool.nodes.external.requests"
+      ],
+      "repo_id": "psf/requests",
+      "updated_at": "2025-08-18T20:33:27Z",
+      "version": "v2.32.5"
     }
   ]
 }

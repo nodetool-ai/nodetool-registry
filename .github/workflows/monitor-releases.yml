@@ -1,0 +1,136 @@
+# .github/workflows/monitor-releases.yml
+# Monitor all NodeTool repositories for releases and update index
+
+name: Monitor Package Releases
+
+on:
+  # Triggered by individual package repositories
+  repository_dispatch:
+    types: [package-released]
+  
+  # Webhook for GitHub releases (requires setup)
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package name that was released'
+        required: true
+        type: string
+      version:
+        description: 'Version that was released'
+        required: true
+        type: string
+      repository:
+        description: 'Repository that was released'
+        required: true  
+        type: string
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract release info
+        id: release-info
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            PACKAGE="${{ github.event.client_payload.package }}"
+            VERSION="${{ github.event.client_payload.version }}"
+            REPOSITORY="${{ github.event.client_payload.repository }}"
+            TAG="${{ github.event.client_payload.tag }}"
+            RELEASE_URL="${{ github.event.client_payload.release_url }}"
+          else
+            PACKAGE="${{ github.event.inputs.package }}"
+            VERSION="${{ github.event.inputs.version }}"  
+            REPOSITORY="${{ github.event.inputs.repository }}"
+            TAG="v${VERSION}"
+            RELEASE_URL="https://github.com/${REPOSITORY}/releases/tag/${TAG}"
+          fi
+          
+          echo "package=$PACKAGE" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "repository=$REPOSITORY" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT  
+          echo "release-url=$RELEASE_URL" >> $GITHUB_OUTPUT
+          
+          echo "📦 Package: $PACKAGE"
+          echo "🔖 Version: $VERSION"
+          echo "🏠 Repository: $REPOSITORY"
+          echo "🏷️ Tag: $TAG"
+          
+      - name: Checkout registry
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          pip install requests packaging jinja2
+          
+      - name: Update package index
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔄 Updating index for ${{ steps.release-info.outputs.package }}"
+          
+          # Run incremental update for specific package
+          python scripts/build_index.py \
+            --output-dir docs/simple \
+            --package-filter "${{ steps.release-info.outputs.package }}"
+          
+      - name: Generate updated metadata
+        run: |
+          python scripts/generate_metadata.py --output-dir docs
+          
+      - name: Commit and push changes
+        run: |
+          git config user.name "Registry Bot"
+          git config user.email "registry@nodetool.ai"
+          
+          # Check if there are changes
+          if git diff --quiet docs/; then
+            echo "📋 No changes to commit"
+            exit 0
+          fi
+          
+          git add docs/
+          git commit -m "Update index for ${{ steps.release-info.outputs.package }} v${{ steps.release-info.outputs.version }}
+
+          - Package: ${{ steps.release-info.outputs.package }}
+          - Version: ${{ steps.release-info.outputs.version }}
+          - Repository: ${{ steps.release-info.outputs.repository }}
+          - Tag: ${{ steps.release-info.outputs.tag }}
+          - Release: ${{ steps.release-info.outputs.release-url }}"
+          
+          git push
+          
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          cname: packages.nodetool.ai
+          
+      - name: Verify deployment
+        run: |
+          echo "✅ Index updated for ${{ steps.release-info.outputs.package }} v${{ steps.release-info.outputs.version }}"
+          echo "🌐 Available at: https://nodetool-ai.github.io/nodetool-registry/simple/${{ steps.release-info.outputs.package }}/"
+          
+      - name: Create update summary
+        run: |
+          echo "## 📦 Package Index Updated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Package**: ${{ steps.release-info.outputs.package }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: ${{ steps.release-info.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository**: ${{ steps.release-info.outputs.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Index URL**: https://nodetool-ai.github.io/nodetool-registry/simple/${{ steps.release-info.outputs.package }}/" >> $GITHUB_STEP_SUMMARY
+          echo "**Release**: [${{ steps.release-info.outputs.tag }}](${{ steps.release-info.outputs.release-url }})" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Installation" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ ${{ steps.release-info.outputs.package }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
