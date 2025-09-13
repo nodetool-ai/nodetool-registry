@@ -1,6 +1,12 @@
 {
   "packages": [
     {
+      "description": "Core system",
+      "name": "Core",
+      "namespaces": [],
+      "repo_id": "nodetool-ai/nodetool-core"
+    },
+    {
       "description": "Essential foundational nodes providing core functionality for data processing, flow control, and basic operations.",
       "name": "Base Nodes",
       "namespaces": [
