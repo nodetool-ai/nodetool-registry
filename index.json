@@ -103,15 +103,14 @@
       "repo_id": "nodetool-ai/nodetool-elevenlabs"
     },
     {
-      "description": "Example external package for testing polling functionality.",
+      "description": "PyWhisperCpp",
       "external": true,
-      "name": "Example External Package",
+      "name": "PyWhisperCpp",
       "namespaces": [
-        "nodetool.nodes.external.requests"
       ],
-      "repo_id": "psf/requests",
-      "updated_at": "2025-08-18T20:33:27Z",
-      "version": "v2.32.5"
+      "repo_id": "nodetool-ai/pywhispercpp",
+      "updated_at": "2025-09-15T20:33:27Z",
+      "version": "v1.3.4nt"
     }
   ]
 }
