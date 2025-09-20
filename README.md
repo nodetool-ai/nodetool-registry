@@ -20,8 +20,6 @@ The primary interface for managing packs is through the Nodetool UI, which provi
 - Update packs to latest wheel versions
 - View pack information and documentation
 
-![Packs](packages.png)
-
 ## For Node Developers
 
 The CLI tool is available for developers to create and manage Nodetool packs.
@@ -30,19 +28,13 @@ Basic commands:
 
 ```bash
 # List installed packs
-nodetool list
-
-# List available packs in the registry
-nodetool list --available
+nodetool package list
 
 # Scan current directory for nodes and create metadata
-nodetool scan
-
-# Scan with verbose output
-nodetool scan --verbose
+nodetool package scan
 
 # Initialize a new Nodetool pack
-nodetool init
+nodetool package init
 ```
 
 ### Creating a Node Pack
