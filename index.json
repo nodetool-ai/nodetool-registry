@@ -23,6 +23,14 @@
       "repo_id": "nodetool-ai/nodetool-apple"
     },
     {
+      "description": "Apple Silicon MLX nodes for Nodetool",
+      "name": "MLX",
+      "namespaces": [
+        "nodetool.nodes.mlx"
+      ],
+      "repo_id": "nodetool-ai/nodetool-mlx"
+    },
+    {
       "description": "Use a growing list of HuggingFace models from categories like vision, audio, classification, segmentation and more.",
       "name": "HuggingFace",
       "namespaces": [
@@ -103,14 +111,11 @@
       "repo_id": "nodetool-ai/nodetool-elevenlabs"
     },
     {
-      "description": "PyWhisperCpp",
+      "description": "Whisper.cpp nodes for audio transcription on CPU",
       "external": true,
-      "name": "PyWhisperCpp",
-      "namespaces": [
-      ],
-      "repo_id": "nodetool-ai/pywhispercpp",
-      "updated_at": "2025-09-15T20:33:27Z",
-      "version": "v1.3.4nt"
+      "name": "WhisperCpp",
+      "namespaces": [],
+      "repo_id": "nodetool-ai/nodetool-whispercpp"
     }
   ]
 }
