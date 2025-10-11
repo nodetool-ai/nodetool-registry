@@ -47,28 +47,12 @@
       "repo_id": "nodetool-ai/nodetool-lib-audio"
     },
     {
-      "description": "Add data validators and transformers that reshape, clean and join data for ML and visualization.",
-      "name": "Data",
-      "namespaces": [
-        "nodetool.nodes.lib.data"
-      ],
-      "repo_id": "nodetool-ai/nodetool-lib-data"
-    },
-    {
       "description": "Add nodes to extract text, tables and images from PDFs, Excel, Word or Markdown; re-format spreadsheets and convert docs with Pandoc or PyMuPDF.",
       "name": "File",
       "namespaces": [
         "nodetool.nodes.lib.file"
       ],
       "repo_id": "nodetool-ai/nodetool-lib-file"
-    },
-    {
-      "description": "Add nodes for image processing: filters (blur, sharpen, invert), generate SVGs, slice/merge grids.",
-      "name": "Image",
-      "namespaces": [
-        "nodetool.nodes.lib.image"
-      ],
-      "repo_id": "nodetool-ai/nodetool-lib-image"
     },
     {
       "description": "Add nodes for scikit-learn and statsmodels: estimators, classification, clustering, regression.",
