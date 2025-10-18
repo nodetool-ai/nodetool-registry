@@ -47,14 +47,6 @@
       "repo_id": "nodetool-ai/nodetool-lib-audio"
     },
     {
-      "description": "Add nodes to extract text, tables and images from PDFs, Excel, Word or Markdown; re-format spreadsheets and convert docs with Pandoc or PyMuPDF.",
-      "name": "File",
-      "namespaces": [
-        "nodetool.nodes.lib.file"
-      ],
-      "repo_id": "nodetool-ai/nodetool-lib-file"
-    },
-    {
       "description": "Add nodes for scikit-learn and statsmodels: estimators, classification, clustering, regression.",
       "name": "ML",
       "namespaces": [
