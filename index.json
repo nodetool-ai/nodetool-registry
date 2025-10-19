@@ -71,14 +71,6 @@
       "repo_id": "nodetool-ai/nodetool-fal"
     },
     {
-      "description": "Add AIME API nodes for image, audio, text and translation tasks.",
-      "name": "AIME",
-      "namespaces": [
-        "nodetool.nodes.aime"
-      ],
-      "repo_id": "nodetool-ai/nodetool-aime"
-    },
-    {
       "description": "Generate lifelike speech in 30+ languages from text using ElevenLabs.",
       "name": "ElevenLabs",
       "namespaces": [
