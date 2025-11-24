@@ -80,7 +80,7 @@ class MyNode(BaseNode):
 
 4. Generate pack metadata:
 
-   - Run `nodetool scan` in your pack repository
+   - Run `nodetool package scan` in your pack repository
    - This will create `your_pack.json` file in `src/nodetool/pack_metadata`
 
 5. Commit and publish your project to a Github repository
