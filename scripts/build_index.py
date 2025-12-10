@@ -38,6 +38,7 @@ class NodeToolRegistryBuilder:
         try:
             packages = self.registry_manager.get_all_packages()
             self.packages = {}
+            self.package_filters = {}
 
             for package in packages:
                 repo_id = package.get("repo_id", "")
@@ -45,6 +46,10 @@ class NodeToolRegistryBuilder:
                     # Extract package name from repo_id
                     package_name = repo_id.split("/")[1]
                     self.packages[package_name] = repo_id
+                    # Store wheel filter if present
+                    wheel_filter = package.get("wheel_filter")
+                    if wheel_filter:
+                        self.package_filters[package_name] = wheel_filter
 
             print(f"📋 Loaded {len(self.packages)} packages from registry")
 
@@ -52,6 +57,7 @@ class NodeToolRegistryBuilder:
             print(f"❌ Failed to load packages from registry: {e}")
             # Fallback to empty dict
             self.packages = {}
+            self.package_filters = {}
 
     def get_wheel_metadata(self, asset_url: str, asset_name: str) -> Dict:
         """Get wheel metadata and discover PEP 658 metadata availability.
@@ -105,7 +111,9 @@ class NodeToolRegistryBuilder:
                 "metadata_sha256": None,
             }
 
-    def generate_package_page(self, package_name: str, repo: str, output_dir: Path):
+    def generate_package_page(
+        self, package_name: str, repo: str, output_dir: Path, wheel_filter: Optional[str] = None
+    ):
         """Generate PEP 503 package page"""
         releases = self.github_client.get_releases(repo)
 
@@ -127,6 +135,9 @@ class NodeToolRegistryBuilder:
         for v, release in valid_releases:
             for asset in release.get("assets", []):
                 if asset["name"].endswith(".whl"):
+                    # Apply wheel filter if specified
+                    if wheel_filter and wheel_filter not in asset["name"]:
+                        continue
                     metadata = self.get_wheel_metadata(
                         asset["browser_download_url"], asset["name"]
                     )
@@ -258,9 +269,11 @@ class NodeToolRegistryBuilder:
 
         # Generate package pages
         for package_name, repo in packages_to_build.items():
-            print(f"\n📦 Processing {package_name} ({repo})")
+            wheel_filter = self.package_filters.get(package_name)
+            filter_info = f" [filter: {wheel_filter}]" if wheel_filter else ""
+            print(f"\n📦 Processing {package_name} ({repo}){filter_info}")
             try:
-                count = self.generate_package_page(package_name, repo, output_path)
+                count = self.generate_package_page(package_name, repo, output_path, wheel_filter)
                 package_counts[package_name] = count
             except Exception as e:
                 print(f"❌ Failed to process {package_name}: {e}")
