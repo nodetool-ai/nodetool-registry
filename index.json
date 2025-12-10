@@ -84,6 +84,13 @@
       "name": "WhisperCpp",
       "namespaces": [],
       "repo_id": "nodetool-ai/nodetool-whispercpp"
+    },
+    {
+      "description": "Nunchaku quantization library for efficient inference",
+      "external": true,
+      "name": "Nunchaku",
+      "namespaces": [],
+      "repo_id": "nunchaku-tech/nunchaku"
     }
   ]
 }
