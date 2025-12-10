@@ -90,7 +90,9 @@
       "external": true,
       "name": "Nunchaku",
       "namespaces": [],
-      "repo_id": "nunchaku-tech/nunchaku"
+      "repo_id": "nunchaku-tech/nunchaku",
+      "updated_at": "2025-10-25T18:47:55Z",
+      "version": "v1.0.2"
     }
   ]
 }
