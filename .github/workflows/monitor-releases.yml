@@ -74,12 +74,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "🔄 Updating index for ${{ steps.release-info.outputs.package }}"
+          echo "🔄 Rebuilding full index (triggered by ${{ steps.release-info.outputs.package }})"
 
-          # Run incremental update for specific package
+          # Always rebuild full index to ensure all packages are present
           python scripts/build_index.py \
             --output-dir dist/simple \
-            --package-filter "${{ steps.release-info.outputs.package }}"
+            --github-token ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate updated metadata
         run: |
@@ -108,7 +108,7 @@ jobs:
           git push
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist

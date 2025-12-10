@@ -7,7 +7,7 @@
 #
 # Triggers:
 #   - repository_dispatch: "package-released" events from package repos
-#   - workflow_dispatch: manual runs with optional input force_rebuild
+#   - workflow_dispatch: manual runs
 #   - schedule: daily at 06:00 UTC
 #
 # Permissions (job-level):
@@ -17,7 +17,6 @@
 #
 # Inputs / Env:
 #   - GITHUB_TOKEN (secret): used for API calls and deploy
-#   - inputs.force_rebuild (boolean): force full rebuild
 #
 # Tooling:
 #   - Python 3.11
@@ -46,12 +45,6 @@ on:
 
   # Manual trigger
   workflow_dispatch:
-    inputs:
-      force_rebuild:
-        description: "Force rebuild entire index"
-        required: false
-        default: "false"
-        type: boolean
 
   # Scheduled rebuild (daily)
   schedule:
@@ -83,7 +76,6 @@ jobs:
       - name: Build package index
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FORCE_REBUILD: ${{ github.event.inputs.force_rebuild }}
         run: |
           python scripts/build_index.py --output-dir dist/simple --github-token ${{ secrets.GITHUB_TOKEN }}
 
