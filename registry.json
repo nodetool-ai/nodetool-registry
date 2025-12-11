@@ -1,0 +1,13 @@
+{
+  "name": "NodeTool Package Registry",
+  "description": "Official package registry for NodeTool AI workflow packages",
+  "version": "1.0",
+  "api_version": "2",
+  "repository_version": "1.0",
+  "last_updated": "2025-12-11T06:20:34Z",
+  "index_url": "https://nodetool-ai.github.io/nodetool-registry/simple/",
+  "packages_url": "https://nodetool-ai.github.io/nodetool-registry/packages.json",
+  "source": "https://github.com/nodetool-ai/nodetool-registry",
+  "maintainer": "NodeTool AI Team",
+  "license": "MIT"
+}
