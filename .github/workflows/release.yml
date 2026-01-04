@@ -49,6 +49,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Authenticate gh
+        run: |
+          gh auth login --with-token <<< '${{ secrets.GH_PAT }}'
+
       - name: Run release for nodetool-core
         run: |
           cd release
