@@ -119,10 +119,18 @@ jobs:
 
       - name: Set git user
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git -C nodetool-core config user.name "github-actions[bot]"
-          git -C nodetool-core config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          for repo in nodetool-core nodetool-apple nodetool-base nodetool-comfy nodetool-elevenlabs \
+                      nodetool-fal nodetool-huggingface nodetool-lib-ml nodetool-mlx \
+                      nodetool-lib-audio nodetool-replicate nodetool-whispercpp \
+                      nodetool; do
+            if [ -d "$repo" ]; then
+              git -C "$repo" config user.name "github-actions[bot]"
+              git -C "$repo" config user.email "github-actions[bot]@users.noreply.github.com"
+            fi
+          done
 
       - name: Run release for other packages
         run: |
