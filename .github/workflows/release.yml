@@ -20,13 +20,13 @@ env:
   PYTHON_VERSION: '3.11'
 
 jobs:
-  release:
-    name: Release ${{ github.event.inputs.version || 'all repos' }}
+  release-core:
+    name: Release nodetool-core
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout this repo
+      - name: Checkout nodetool-registry
         uses: actions/checkout@v4
 
       - name: Install uv
@@ -37,7 +37,56 @@ jobs:
       - name: Set up Python
         run: uv python install ${{ env.PYTHON_VERSION }}
 
-      - name: Check out nodetool-core
+      - name: Checkout nodetool-core
+        uses: actions/checkout@v4
+        with:
+          repository: nodetool-ai/nodetool-core
+          path: nodetool-core
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Set git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run release for nodetool-core
+        run: |
+          cd release
+          uv sync
+          uv run python release.py ${{ github.event.inputs.version }} \
+            --update-versions \
+            --repo nodetool-core
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+
+  release-others:
+    name: Release other packages
+    runs-on: ubuntu-latest
+    needs: release-core
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout nodetool-registry
+        uses: actions/checkout@v4
+
+      - name: Checkout gh-pages for simple index
+        uses: actions/checkout@v4
+        with:
+          repository: nodetool-ai/nodetool-registry
+          ref: gh-pages
+          path: registry-gh-pages
+          token: ${{ secrets.GH_PAT }}
+        continue-on-error: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Checkout nodetool-core
         uses: actions/checkout@v4
         with:
           repository: nodetool-ai/nodetool-core
@@ -50,7 +99,7 @@ jobs:
           uv sync
           uv pip install -e .
 
-      - name: Check out all nodetool repos
+      - name: Check out other nodetool repos
         run: |
           gh auth login --with-token <<< '${{ secrets.GH_PAT }}'
 
@@ -68,12 +117,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Run release script
+      - name: Run release for other packages
         run: |
           cd release
           uv sync
           uv run python release.py ${{ github.event.inputs.version }} \
-            $([ "${{ github.event.inputs.update_versions }}" == "true" ] && echo "--update-versions") \
+            --update-versions \
             $([ -n "${{ github.event.inputs.repo }}" ] && echo "--repo ${{ github.event.inputs.repo }}")
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
+          UV_FIND_LINKS: ../registry-gh-pages/simple

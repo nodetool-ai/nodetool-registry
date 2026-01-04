@@ -157,10 +157,11 @@ def run_command(
     cwd: Optional[Path] = None,
     check=True,
     capture_output=True,
+    env: Optional[dict] = None,
 ) -> subprocess.CompletedProcess:
     try:
         result = subprocess.run(
-            cmd, cwd=cwd, check=check, capture_output=capture_output, text=True
+            cmd, cwd=cwd, check=check, capture_output=capture_output, text=True, env=env
         )
         return result
     except subprocess.CalledProcessError as e:
@@ -351,6 +352,37 @@ def run_package_scan(repo_path: Path) -> bool:
         return False
 
 
+def generate_uv_lock(repo_path: Path, find_links: Optional[str] = None) -> bool:
+    pyproject_path = repo_path / "pyproject.toml"
+    if not pyproject_path.exists():
+        return False
+
+    print_info(f"  Generating uv.lock in {repo_path.name}...")
+
+    env = os.environ.copy()
+    if find_links:
+        env["UV_FIND_LINKS"] = find_links
+
+    result = run_command(
+        ["uv", "lock"],
+        cwd=repo_path,
+        check=False,
+        capture_output=True,
+        env=env,
+    )
+    if result.returncode == 0:
+        lock_path = repo_path / "uv.lock"
+        if lock_path.exists():
+            print_info(f"  Generated uv.lock in {repo_path.name}")
+            return True
+    else:
+        print_warning(f"  Failed to generate uv.lock in {repo_path.name}")
+        if result.stderr:
+            for line in result.stderr.strip().split("\n")[:5]:
+                print(f"    {line}")
+    return False
+
+
 def get_release_run(repo_path: Path, tag: str) -> tuple[Optional[dict], bool]:
     cmd = [
         "gh",
@@ -442,6 +474,7 @@ def process_repo(
     version: str,
     version_tag: str,
     args,
+    find_links: Optional[str] = None,
 ):
     repo_path = Path(repo)
     if not repo_path.is_dir():
@@ -493,6 +526,10 @@ def process_repo(
             files_updated = True
         if update_constants_version(repo_path / "web/src/config/constants.ts", version):
             files_updated = True
+
+        if pyproject_path.exists() and not is_nodetool:
+            if generate_uv_lock(repo_path, find_links):
+                files_updated = True
 
     if files_updated:
         print_info("  Staging version updates...")
@@ -682,8 +719,9 @@ def main():
             print_info("nodetool-core has been published!")
 
     print_info("Step 1b: Creating and pushing tags...")
+    find_links = str(cwd / "registry-gh-pages/simple")
     for repo in repos_to_process:
-        process_repo(repo, repos_to_process, version, version_tag, args)
+        process_repo(repo, repos_to_process, version, version_tag, args, find_links)
 
     print_info("Step 2: Waiting for release workflows to complete...")
     wait_for_repos(repos_to_process, version_tag)
