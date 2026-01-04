@@ -348,7 +348,7 @@ def run_package_scan(repo_path: Path) -> bool:
         run_command(cmd, cwd=repo_path, check=True)
         print_info(f"  nodetool package scan completed")
         return True
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, FileNotFoundError):
         print_warning(f"  Failed to run nodetool package scan in {repo_path.name}")
         return False
 
