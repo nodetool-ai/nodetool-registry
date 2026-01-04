@@ -353,23 +353,18 @@ def run_package_scan(repo_path: Path) -> bool:
         return False
 
 
-def generate_uv_lock(repo_path: Path, find_links: Optional[str] = None) -> bool:
+def generate_uv_lock(repo_path: Path) -> bool:
     pyproject_path = repo_path / "pyproject.toml"
     if not pyproject_path.exists():
         return False
 
     print_info(f"  Generating uv.lock in {repo_path.name}...")
 
-    env = os.environ.copy()
-    if find_links:
-        env["UV_FIND_LINKS"] = find_links
-
     result = run_command(
         ["uv", "lock"],
         cwd=repo_path,
         check=False,
         capture_output=True,
-        env=env,
     )
     if result.returncode == 0:
         lock_path = repo_path / "uv.lock"
@@ -475,7 +470,6 @@ def process_repo(
     version: str,
     version_tag: str,
     args,
-    find_links: Optional[str] = None,
 ):
     repo_path = Path(repo)
     if not repo_path.is_dir():
@@ -529,7 +523,7 @@ def process_repo(
             files_updated = True
 
         if pyproject_path.exists() and not is_nodetool:
-            if generate_uv_lock(repo_path, find_links):
+            if generate_uv_lock(repo_path):
                 files_updated = True
 
     if files_updated:
@@ -720,9 +714,8 @@ def main():
             print_info("nodetool-core has been published!")
 
     print_info("Step 1b: Creating and pushing tags...")
-    find_links = str(cwd / "registry-gh-pages/simple")
     for repo in repos_to_process:
-        process_repo(repo, repos_to_process, version, version_tag, args, find_links)
+        process_repo(repo, repos_to_process, version, version_tag, args)
 
     print_info("Step 2: Waiting for release workflows to complete...")
     wait_for_repos(repos_to_process, version_tag)
