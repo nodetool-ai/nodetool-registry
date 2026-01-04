@@ -614,10 +614,9 @@ def process_repo(
         print_error(f"  Failed to push tag for {repo}")
 
 
-def wait_for_repos(repos_to_wait: List[str], version_tag: str):
+def wait_for_repos(repos_to_wait: List[str], version_tag: str, cwd: Path):
     elapsed = 0
     logged_failures = set()
-    cwd = Path.cwd()
 
     while elapsed < MAX_WAIT:
         all_completed = True
@@ -703,14 +702,14 @@ def main():
         print_info("Version updates: DISABLED (use --update-versions to enable)")
     print_info(f"Repositories to tag: {', '.join(repos_to_process)}")
 
-    cwd = Path.cwd()
+    cwd = Path(__file__).parent.parent
 
     print_info("Step 1a: Processing nodetool-core...")
     if not args.repo:
         process_repo("nodetool-core", repos_to_process, version, version_tag, args)
         if not args.no_wait_core:
             print_info("Waiting for nodetool-core workflow to complete...")
-            wait_for_repos(["nodetool-core"], version_tag)
+            wait_for_repos(["nodetool-core"], version_tag, cwd)
             print_info("nodetool-core has been published!")
 
     print_info("Step 1b: Creating and pushing tags...")
@@ -718,7 +717,7 @@ def main():
         process_repo(repo, repos_to_process, version, version_tag, args)
 
     print_info("Step 2: Waiting for release workflows to complete...")
-    wait_for_repos(repos_to_process, version_tag)
+    wait_for_repos(repos_to_process, version_tag, cwd)
     print_info("All release workflows have completed!")
 
     print_info("Step 3: Triggering registry workflow to build index...")
