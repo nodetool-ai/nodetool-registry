@@ -705,6 +705,11 @@ def main():
     cwd = Path(__file__).resolve().parent.parent
     print_info(f"Working directory: {cwd}")
     print_info(f"Contents: {list(cwd.iterdir())}")
+    nodetool_core_path = cwd / "nodetool-core"
+    print_info(f"nodetool-core exists: {nodetool_core_path.exists()}, is_dir: {nodetool_core_path.is_dir()}, is_symlink: {nodetool_core_path.is_symlink()}")
+    if nodetool_core_path.is_dir():
+        git_path = nodetool_core_path / ".git"
+        print_info(f"nodetool-core/.git exists: {git_path.exists()}, is_dir: {git_path.is_dir()}")
 
     print_info("Step 1a: Processing nodetool-core...")
     if not args.repo:
