@@ -734,10 +734,7 @@ def main():
     print_info("All release workflows have completed!")
 
     print_info("Step 3: Triggering registry workflow to build index...")
-    registry_path = cwd / "nodetool-registry"
-    if not registry_path.is_dir():
-        print_error("nodetool-registry directory not found")
-        sys.exit(1)
+    registry_path = cwd
 
     cmd = ["gh", "workflow", "run", REGISTRY_WORKFLOW_ID]
     if run_command(cmd, cwd=registry_path, check=False).returncode == 0:
