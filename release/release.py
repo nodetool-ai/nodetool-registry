@@ -138,6 +138,7 @@ def print_warning(msg):
 
 
 REPOS = [
+    "nodetool-core",
     "nodetool-apple",
     "nodetool-base",
     "nodetool-comfy",
