@@ -702,7 +702,9 @@ def main():
         print_info("Version updates: DISABLED (use --update-versions to enable)")
     print_info(f"Repositories to tag: {', '.join(repos_to_process)}")
 
-    cwd = Path(__file__).parent.parent
+    cwd = Path(__file__).resolve().parent.parent
+    print_info(f"Working directory: {cwd}")
+    print_info(f"Contents: {list(cwd.iterdir())}")
 
     print_info("Step 1a: Processing nodetool-core...")
     if not args.repo:
