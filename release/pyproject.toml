@@ -11,6 +11,3 @@ dependencies = []
 
 [project.scripts]
 release = "release:main"
-
-[tool.uv]
-package = false

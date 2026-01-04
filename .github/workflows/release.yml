@@ -29,15 +29,6 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v4
 
-      - name: Checkout gh-pages for simple index
-        uses: actions/checkout@v4
-        with:
-          repository: nodetool-ai/nodetool-registry
-          ref: gh-pages
-          path: registry-gh-pages
-          token: ${{ secrets.GH_PAT }}
-        continue-on-error: true
-
       - name: Install uv
         uses: astral-sh/setup-uv@v4
         with:
@@ -81,7 +72,7 @@ jobs:
         run: |
           cd release
           uv sync
-          UV_FIND_LINKS="../registry-gh-pages/simple" uv run python release.py ${{ github.event.inputs.version }} \
+          uv run python release.py ${{ github.event.inputs.version }} \
             $([ "${{ github.event.inputs.update_versions }}" == "true" ] && echo "--update-versions") \
             $([ -n "${{ github.event.inputs.repo }}" ] && echo "--repo ${{ github.event.inputs.repo }}")
         env:

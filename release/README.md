@@ -104,12 +104,10 @@ When `--update-versions` is enabled:
 4. **package_metadata/*.json** - regenerated via `nodetool package scan`
 5. **web/package.json**, **electron/package.json**, **mobile/package.json** - version
 6. **web/src/config/constants.ts** - VERSION constant
-7. **uv.lock** - generated for reproducible dependency resolution
 
 ## Prerequisites
 
 - Python 3.11+
-- `uv` CLI tool (install via `curl -LsSf https://astral.sh/uv/install.sh | sh`)
 - `gh` CLI tool authenticated with GitHub
 - `GH_PAT` secret with `repo` scope
 

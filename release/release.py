@@ -48,8 +48,6 @@ When --update-versions is enabled:
 - Regenerates package_metadata JSON files using `nodetool package scan`
 - Updates all relevant Dockerfiles to reference the new tag
 - Updates VERSION constants in TypeScript files
-- Generates uv.lock files for reproducible dependency resolution
-- Generates uv.lock files for reproducible dependency resolution
 
 USAGE:
 
@@ -159,11 +157,10 @@ def run_command(
     cwd: Optional[Path] = None,
     check=True,
     capture_output=True,
-    env: Optional[dict] = None,
 ) -> subprocess.CompletedProcess:
     try:
         result = subprocess.run(
-            cmd, cwd=cwd, check=check, capture_output=capture_output, text=True, env=env
+            cmd, cwd=cwd, check=check, capture_output=capture_output, text=True
         )
         return result
     except subprocess.CalledProcessError as e:
@@ -354,37 +351,6 @@ def run_package_scan(repo_path: Path) -> bool:
         return False
 
 
-def generate_uv_lock(repo_path: Path, find_links: Optional[str] = None) -> bool:
-    pyproject_path = repo_path / "pyproject.toml"
-    if not pyproject_path.exists():
-        return False
-
-    print_info(f"  Generating uv.lock in {repo_path.name}...")
-
-    env = os.environ.copy()
-    if find_links:
-        env["UV_FIND_LINKS"] = find_links
-
-    result = run_command(
-        ["uv", "lock"],
-        cwd=repo_path,
-        check=False,
-        capture_output=True,
-        env=env,
-    )
-    if result.returncode == 0:
-        lock_path = repo_path / "uv.lock"
-        if lock_path.exists():
-            print_info(f"  Generated uv.lock in {repo_path.name}")
-            return True
-    else:
-        print_warning(f"  Failed to generate uv.lock in {repo_path.name}")
-        if result.stderr:
-            for line in result.stderr.strip().split("\n")[:5]:
-                print(f"    {line}")
-    return False
-
-
 def get_release_run(repo_path: Path, tag: str) -> tuple[Optional[dict], bool]:
     cmd = [
         "gh",
@@ -476,7 +442,6 @@ def process_repo(
     version: str,
     version_tag: str,
     args,
-    cwd: Optional[Path] = None,
 ):
     repo_path = Path(repo)
     if not repo_path.is_dir():
@@ -488,9 +453,6 @@ def process_repo(
         return
 
     print_info(f"Processing {repo}...")
-
-    if cwd is None:
-        cwd = Path.cwd()
 
     files_updated = False
     is_nodetool = repo == "nodetool"
@@ -521,15 +483,6 @@ def process_repo(
         if (repo_path / "pyproject.toml").exists() or metadata_dirs:
             if run_package_scan(repo_path):
                 files_updated = True
-
-        if pyproject_path.exists():
-            find_links = cwd / "registry-gh-pages/simple"
-            if find_links.exists():
-                if generate_uv_lock(repo_path, str(find_links)):
-                    files_updated = True
-            else:
-                if generate_uv_lock(repo_path):
-                    files_updated = True
 
     if args.update_versions and is_nodetool:
         if update_package_json_version(repo_path / "web/package.json", version):
@@ -722,7 +675,7 @@ def main():
 
     print_info("Step 1a: Processing nodetool-core...")
     if not args.repo:
-        process_repo("nodetool-core", repos_to_process, version, version_tag, args, cwd)
+        process_repo("nodetool-core", repos_to_process, version, version_tag, args)
         if not args.no_wait_core:
             print_info("Waiting for nodetool-core workflow to complete...")
             wait_for_repos(["nodetool-core"], version_tag)
@@ -730,7 +683,7 @@ def main():
 
     print_info("Step 1b: Creating and pushing tags...")
     for repo in repos_to_process:
-        process_repo(repo, repos_to_process, version, version_tag, args, cwd)
+        process_repo(repo, repos_to_process, version, version_tag, args)
 
     print_info("Step 2: Waiting for release workflows to complete...")
     wait_for_repos(repos_to_process, version_tag)
