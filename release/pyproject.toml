@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nodetool-release"
+version = "0.1.0"
+description = "Release automation for the NodeTool ecosystem"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+release = "release:main"
+
+[tool.uv]
+package = false

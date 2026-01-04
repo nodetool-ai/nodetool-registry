@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v0.6.2-rc.20)'
+        required: true
+      repo:
+        description: 'Repository to release (leave empty for all)'
+        required: false
+        default: ''
+      update_versions:
+        description: 'Update version files'
+        required: false
+        type: boolean
+        default: true
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  release:
+    name: Release ${{ github.event.inputs.version || 'all repos' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Checkout gh-pages for simple index
+        uses: actions/checkout@v4
+        with:
+          repository: nodetool-ai/nodetool-registry
+          ref: gh-pages
+          path: registry-gh-pages
+          token: ${{ secrets.GH_PAT }}
+        continue-on-error: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+
+      - name: Check out nodetool-core
+        uses: actions/checkout@v4
+        with:
+          repository: nodetool-ai/nodetool-core
+          path: nodetool-core
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Install nodetool-core
+        run: |
+          cd nodetool-core
+          uv sync
+          uv pip install -e .
+
+      - name: Check out all nodetool repos
+        run: |
+          gh auth login --with-token <<< '${{ secrets.GH_PAT }}'
+
+          for repo in nodetool-apple nodetool-base nodetool-comfy nodetool-elevenlabs \
+                      nodetool-fal nodetool-huggingface nodetool-lib-ml nodetool-mlx \
+                      nodetool-lib-audio nodetool-replicate nodetool-whispercpp \
+                      nodetool; do
+            if [ ! -d "$repo" ]; then
+              gh repo clone "nodetool-ai/$repo" "$repo" -- --quiet
+            fi
+          done
+
+      - name: Set git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run release script
+        run: |
+          cd release
+          uv sync
+          UV_FIND_LINKS="../registry-gh-pages/simple" uv run python release.py ${{ github.event.inputs.version }} \
+            $([ "${{ github.event.inputs.update_versions }}" == "true" ] && echo "--update-versions") \
+            $([ -n "${{ github.event.inputs.repo }}" ] && echo "--repo ${{ github.event.inputs.repo }}")
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
