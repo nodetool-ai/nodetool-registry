@@ -51,7 +51,6 @@ jobs:
 
       - name: Run release for nodetool-core
         run: |
-          cd release
           uv sync
           uv run python release.py ${{ github.event.inputs.version }} \
             --update-versions \
@@ -119,11 +118,10 @@ jobs:
 
       - name: Run release for other packages
         run: |
-          cd release
           uv sync
           uv run python release.py ${{ github.event.inputs.version }} \
             --update-versions \
             $([ -n "${{ github.event.inputs.repo }}" ] && echo "--repo ${{ github.event.inputs.repo }}")
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
-          UV_FIND_LINKS: ../registry-gh-pages/simple
+          UV_FIND_LINKS: registry-gh-pages/simple
