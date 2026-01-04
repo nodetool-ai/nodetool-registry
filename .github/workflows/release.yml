@@ -48,7 +48,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-        working-directory: ./nodetool-core
+          git -C nodetool-core config user.name "github-actions[bot]"
+          git -C nodetool-core config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Authenticate gh
         run: |
