@@ -470,10 +470,16 @@ def process_repo(
     version: str,
     version_tag: str,
     args,
+    cwd: Path,
 ):
-    repo_path = Path(repo)
+    repo_path = cwd / repo
+    print_info(f"DEBUG process_repo: cwd={cwd}, repo={repo}, repo_path={repo_path}, exists={repo_path.exists()}, is_dir={repo_path.is_dir()}")
     if not repo_path.is_dir():
         print_error(f"Repository directory '{repo}' not found. Skipping...")
+        return
+
+    if not (repo_path / ".git").is_dir():
+        print_error(f"{repo} is not a git repository. Skipping...")
         return
 
     if not (repo_path / ".git").is_dir():
@@ -713,7 +719,7 @@ def main():
 
     print_info("Step 1a: Processing nodetool-core...")
     if not args.repo:
-        process_repo("nodetool-core", repos_to_process, version, version_tag, args)
+        process_repo("nodetool-core", repos_to_process, version, version_tag, args, cwd)
         if not args.no_wait_core:
             print_info("Waiting for nodetool-core workflow to complete...")
             wait_for_repos(["nodetool-core"], version_tag, cwd)
@@ -721,7 +727,7 @@ def main():
 
     print_info("Step 1b: Creating and pushing tags...")
     for repo in repos_to_process:
-        process_repo(repo, repos_to_process, version, version_tag, args)
+        process_repo(repo, repos_to_process, version, version_tag, args, cwd)
 
     print_info("Step 2: Waiting for release workflows to complete...")
     wait_for_repos(repos_to_process, version_tag, cwd)
