@@ -143,33 +143,36 @@ def setup_git_auth(repo_path: Path) -> bool:
     Configure git to use GH_PAT, GITHUB_TOKEN, or GH_TOKEN for authentication if available.
     Returns True if authentication was configured, False otherwise.
     """
-    gh_token = os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
-    
+    gh_token = (
+        os.environ.get("GH_PAT")
+        or os.environ.get("GITHUB_TOKEN")
+        or os.environ.get("GH_TOKEN")
+    )
+
     if not gh_token:
         print_warning("No GH_PAT, GITHUB_TOKEN, or GH_TOKEN found in environment")
         return False
-    
+
     # Get the remote URL
     result = run_command(
         ["git", "remote", "get-url", "origin"],
         cwd=repo_path,
         check=False,
-        capture_output=True
+        capture_output=True,
     )
-    
+
     if result.returncode != 0:
         print_warning(f"Could not get remote URL for {repo_path}")
         return False
-    
+
     remote_url = result.stdout.strip()
     print_info(f"Original remote URL: {remote_url}")
-    
+
     # Convert to authenticated HTTPS URL if needed
     if remote_url.startswith("https://github.com/"):
         # Already HTTPS, update to include token
         auth_url = remote_url.replace(
-            "https://github.com/",
-            f"https://x-access-token:{gh_token}@github.com/"
+            "https://github.com/", f"https://x-access-token:{gh_token}@github.com/"
         )
     elif remote_url.startswith("git@github.com:"):
         # Convert SSH to HTTPS with token
@@ -178,15 +181,15 @@ def setup_git_auth(repo_path: Path) -> bool:
     else:
         print_warning(f"Unexpected remote URL format: {remote_url}")
         return False
-    
+
     # Set the authenticated URL
     run_command(
         ["git", "remote", "set-url", "origin", auth_url],
         cwd=repo_path,
         check=True,
-        capture_output=True
+        capture_output=True,
     )
-    
+
     print_info(f"Configured git authentication for {repo_path}")
     return True
 
@@ -194,7 +197,7 @@ def setup_git_auth(repo_path: Path) -> bool:
 def print_git_diagnostics(repo_path: Path):
     """Print diagnostic information about git configuration"""
     print_info(f"\n=== Git Diagnostics for {repo_path} ===")
-    
+
     # Check git user config
     for cmd, desc in [
         (["git", "config", "user.name"], "user.name"),
@@ -209,11 +212,11 @@ def print_git_diagnostics(repo_path: Path):
             print_info(f"  {desc}: {output}")
         else:
             print_warning(f"  {desc}: Failed to get")
-    
+
     # Check if we're in a git repo
     is_git_repo = (repo_path / ".git").is_dir()
     print_info(f"  Is git repository: {is_git_repo}")
-    
+
     # Check environment variables
     for var in ["GH_PAT", "GITHUB_TOKEN", "GIT_AUTHOR_NAME", "GIT_AUTHOR_EMAIL"]:
         val = os.environ.get(var)
@@ -226,7 +229,7 @@ def print_git_diagnostics(repo_path: Path):
                 print_info(f"  {var}: {val}")
         else:
             print_warning(f"  {var}: not set")
-    
+
     print_info("=== End Diagnostics ===\n")
 
 
@@ -243,6 +246,7 @@ REPOS = [
     "nodetool-lib-audio",
     "nodetool-replicate",
     "nodetool-whispercpp",
+    "nodetool",
 ]
 
 
@@ -575,8 +579,10 @@ def process_repo(
     cwd: Path,
 ):
     repo_path = cwd / repo
-    print_info(f"DEBUG process_repo: cwd={cwd}, repo={repo}, repo_path={repo_path}, exists={repo_path.exists()}, is_dir={repo_path.is_dir()}")
-    
+    print_info(
+        f"DEBUG process_repo: cwd={cwd}, repo={repo}, repo_path={repo_path}, exists={repo_path.exists()}, is_dir={repo_path.is_dir()}"
+    )
+
     if not repo_path.is_dir():
         print_error(f"Repository directory '{repo}' not found. Skipping...")
         return
@@ -587,7 +593,7 @@ def process_repo(
 
     # Print diagnostics before starting
     print_git_diagnostics(repo_path)
-    
+
     # Set up git authentication
     setup_git_auth(repo_path)
 
@@ -691,16 +697,18 @@ def process_repo(
             print_info("  Committed version changes")
             print_info("  Pushing commit to remote (main)...")
             push_result = run_command(
-                ["git", "push", "-v", "origin", "main"], 
-                cwd=repo_path, 
-                check=False
+                ["git", "push", "-v", "origin", "main"], cwd=repo_path, check=False
             )
             if push_result.returncode == 0:
                 print_info("  Pushed commit")
             else:
                 print_error(f"  Failed to push commit for {repo}")
-                print_error(f"  stdout: {push_result.stdout if push_result.stdout else '(empty)'}")
-                print_error(f"  stderr: {push_result.stderr if push_result.stderr else '(empty)'}")
+                print_error(
+                    f"  stdout: {push_result.stdout if push_result.stdout else '(empty)'}"
+                )
+                print_error(
+                    f"  stderr: {push_result.stderr if push_result.stderr else '(empty)'}"
+                )
                 # Print diagnostics again after failure
                 print_git_diagnostics(repo_path)
                 return
@@ -719,16 +727,18 @@ def process_repo(
 
     print_info(f"  Pushing tag {version_tag} to remote...")
     push_result = run_command(
-        ["git", "push", "-v", "-f", "origin", version_tag], 
-        cwd=repo_path, 
-        check=False
+        ["git", "push", "-v", "-f", "origin", version_tag], cwd=repo_path, check=False
     )
     if push_result.returncode == 0:
         print_info(f"  Successfully tagged and pushed {repo}")
     else:
         print_error(f"  Failed to push tag for {repo}")
-        print_error(f"  stdout: {push_result.stdout if push_result.stdout else '(empty)'}")
-        print_error(f"  stderr: {push_result.stderr if push_result.stderr else '(empty)'}")
+        print_error(
+            f"  stdout: {push_result.stdout if push_result.stdout else '(empty)'}"
+        )
+        print_error(
+            f"  stderr: {push_result.stderr if push_result.stderr else '(empty)'}"
+        )
         # Print diagnostics again after failure
         print_git_diagnostics(repo_path)
 
@@ -797,7 +807,7 @@ def main():
     print_info("=== Initial Environment Diagnostics ===")
     print_info(f"Working directory: {os.getcwd()}")
     print_info(f"Script location: {Path(__file__).resolve()}")
-    
+
     # Check for required environment variables
     for var in ["GH_PAT", "GITHUB_TOKEN", "GH_TOKEN"]:
         val = os.environ.get(var)
@@ -806,7 +816,7 @@ def main():
             print_info(f"{var}: {masked}")
         else:
             print_warning(f"{var}: not set")
-    
+
     print_info("=== End Initial Diagnostics ===\n")
 
     if not version_tag.startswith("v"):
@@ -840,10 +850,14 @@ def main():
     print_info(f"Working directory: {cwd}")
     print_info(f"Contents: {list(cwd.iterdir())}")
     nodetool_core_path = cwd / "nodetool-core"
-    print_info(f"nodetool-core exists: {nodetool_core_path.exists()}, is_dir: {nodetool_core_path.is_dir()}, is_symlink: {nodetool_core_path.is_symlink()}")
+    print_info(
+        f"nodetool-core exists: {nodetool_core_path.exists()}, is_dir: {nodetool_core_path.is_dir()}, is_symlink: {nodetool_core_path.is_symlink()}"
+    )
     if nodetool_core_path.is_dir():
         git_path = nodetool_core_path / ".git"
-        print_info(f"nodetool-core/.git exists: {git_path.exists()}, is_dir: {git_path.is_dir()}")
+        print_info(
+            f"nodetool-core/.git exists: {git_path.exists()}, is_dir: {git_path.is_dir()}"
+        )
 
     print_info("Step 1a: Processing nodetool-core...")
     if not args.repo:
@@ -853,12 +867,13 @@ def main():
             wait_for_repos(["nodetool-core"], version_tag, cwd)
             print_info("nodetool-core has been published!")
 
-    print_info("Step 1b: Creating and pushing tags...")
-    for repo in repos_to_process:
+    print_info("Step 1b: Creating and pushing tags for Python packages...")
+    python_repos = [repo for repo in repos_to_process if repo != "nodetool"]
+    for repo in python_repos:
         process_repo(repo, repos_to_process, version, version_tag, args, cwd)
 
     print_info("Step 2: Waiting for release workflows to complete...")
-    wait_for_repos(repos_to_process, version_tag, cwd)
+    wait_for_repos(python_repos, version_tag, cwd)
     print_info("All release workflows have completed!")
 
     print_info("Step 3: Triggering registry workflow to build index...")
@@ -883,6 +898,10 @@ def main():
     else:
         print_error("Failed to trigger registry workflow")
         sys.exit(1)
+
+    print_info("Step 4: Processing nodetool desktop application...")
+    if "nodetool" in repos_to_process:
+        process_repo("nodetool", repos_to_process, version, version_tag, args, cwd)
 
     print_info("=" * 50)
     print_info("Release process completed successfully!")
