@@ -97,7 +97,8 @@ EXAMPLES:
 PREREQUISITES:
 
 - All repositories must be in sibling directories in the current working directory
-- `gh` CLI tool must be installed and authenticated with GitHub
+- GitHub authentication token (GH_PAT, GITHUB_TOKEN, or GH_TOKEN) must be set in environment
+- `gh` CLI tool must be installed for workflow monitoring
 - `nodetool` CLI tool must be installed and in PATH (for package scan)
 - All repositories must have clean git working directories
 - Each repository must be a valid git repository
@@ -139,13 +140,13 @@ def print_warning(msg):
 
 def setup_git_auth(repo_path: Path) -> bool:
     """
-    Configure git to use GH_PAT for authentication if available.
+    Configure git to use GH_PAT, GITHUB_TOKEN, or GH_TOKEN for authentication if available.
     Returns True if authentication was configured, False otherwise.
     """
-    gh_token = os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN")
+    gh_token = os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     
     if not gh_token:
-        print_warning("No GH_PAT or GITHUB_TOKEN found in environment")
+        print_warning("No GH_PAT, GITHUB_TOKEN, or GH_TOKEN found in environment")
         return False
     
     # Get the remote URL
