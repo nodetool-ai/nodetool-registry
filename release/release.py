@@ -97,7 +97,8 @@ EXAMPLES:
 PREREQUISITES:
 
 - All repositories must be in sibling directories in the current working directory
-- `gh` CLI tool must be installed and authenticated with GitHub
+- GitHub authentication token (GH_PAT, GITHUB_TOKEN, or GH_TOKEN) must be set in environment
+- `gh` CLI tool must be installed for workflow monitoring
 - `nodetool` CLI tool must be installed and in PATH (for package scan)
 - All repositories must have clean git working directories
 - Each repository must be a valid git repository
@@ -137,6 +138,98 @@ def print_warning(msg):
     print(f"{YELLOW}[WARNING]{NC} {msg}")
 
 
+def setup_git_auth(repo_path: Path) -> bool:
+    """
+    Configure git to use GH_PAT, GITHUB_TOKEN, or GH_TOKEN for authentication if available.
+    Returns True if authentication was configured, False otherwise.
+    """
+    gh_token = os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    
+    if not gh_token:
+        print_warning("No GH_PAT, GITHUB_TOKEN, or GH_TOKEN found in environment")
+        return False
+    
+    # Get the remote URL
+    result = run_command(
+        ["git", "remote", "get-url", "origin"],
+        cwd=repo_path,
+        check=False,
+        capture_output=True
+    )
+    
+    if result.returncode != 0:
+        print_warning(f"Could not get remote URL for {repo_path}")
+        return False
+    
+    remote_url = result.stdout.strip()
+    print_info(f"Original remote URL: {remote_url}")
+    
+    # Convert to authenticated HTTPS URL if needed
+    if remote_url.startswith("https://github.com/"):
+        # Already HTTPS, update to include token
+        auth_url = remote_url.replace(
+            "https://github.com/",
+            f"https://x-access-token:{gh_token}@github.com/"
+        )
+    elif remote_url.startswith("git@github.com:"):
+        # Convert SSH to HTTPS with token
+        repo_part = remote_url.replace("git@github.com:", "").replace(".git", "")
+        auth_url = f"https://x-access-token:{gh_token}@github.com/{repo_part}.git"
+    else:
+        print_warning(f"Unexpected remote URL format: {remote_url}")
+        return False
+    
+    # Set the authenticated URL
+    run_command(
+        ["git", "remote", "set-url", "origin", auth_url],
+        cwd=repo_path,
+        check=True,
+        capture_output=True
+    )
+    
+    print_info(f"Configured git authentication for {repo_path}")
+    return True
+
+
+def print_git_diagnostics(repo_path: Path):
+    """Print diagnostic information about git configuration"""
+    print_info(f"\n=== Git Diagnostics for {repo_path} ===")
+    
+    # Check git user config
+    for cmd, desc in [
+        (["git", "config", "user.name"], "user.name"),
+        (["git", "config", "user.email"], "user.email"),
+        (["git", "remote", "-v"], "remotes"),
+        (["git", "status", "--porcelain"], "status"),
+        (["git", "branch", "--show-current"], "current branch"),
+    ]:
+        result = run_command(cmd, cwd=repo_path, check=False, capture_output=True)
+        if result.returncode == 0:
+            output = result.stdout.strip() if result.stdout else "(empty)"
+            print_info(f"  {desc}: {output}")
+        else:
+            print_warning(f"  {desc}: Failed to get")
+    
+    # Check if we're in a git repo
+    is_git_repo = (repo_path / ".git").is_dir()
+    print_info(f"  Is git repository: {is_git_repo}")
+    
+    # Check environment variables
+    for var in ["GH_PAT", "GITHUB_TOKEN", "GIT_AUTHOR_NAME", "GIT_AUTHOR_EMAIL"]:
+        val = os.environ.get(var)
+        if val:
+            # Mask token values
+            if "TOKEN" in var or "PAT" in var:
+                masked = val[:4] + "..." + val[-4:] if len(val) > 8 else "***"
+                print_info(f"  {var}: {masked}")
+            else:
+                print_info(f"  {var}: {val}")
+        else:
+            print_warning(f"  {var}: not set")
+    
+    print_info("=== End Diagnostics ===\n")
+
+
 REPOS = [
     "nodetool-core",
     "nodetool-apple",
@@ -161,13 +254,22 @@ def run_command(
     env: Optional[dict] = None,
 ) -> subprocess.CompletedProcess:
     try:
+        # Log command for diagnostics
+        print_info(f"Running: {' '.join(cmd)} (cwd={cwd})")
         result = subprocess.run(
             cmd, cwd=cwd, check=check, capture_output=capture_output, text=True, env=env
         )
+        if result.returncode != 0 and not check:
+            print_warning(f"Command returned {result.returncode}")
+            if result.stdout:
+                print(f"stdout: {result.stdout}")
+            if result.stderr:
+                print(f"stderr: {result.stderr}")
         return result
     except subprocess.CalledProcessError as e:
         if check:
             print_error(f"Command failed: {' '.join(cmd)}")
+            print_error(f"Exit code: {e.returncode}")
             if e.stdout:
                 print(f"stdout: {e.stdout}")
             if e.stderr:
@@ -474,6 +576,7 @@ def process_repo(
 ):
     repo_path = cwd / repo
     print_info(f"DEBUG process_repo: cwd={cwd}, repo={repo}, repo_path={repo_path}, exists={repo_path.exists()}, is_dir={repo_path.is_dir()}")
+    
     if not repo_path.is_dir():
         print_error(f"Repository directory '{repo}' not found. Skipping...")
         return
@@ -482,9 +585,11 @@ def process_repo(
         print_error(f"{repo} is not a git repository. Skipping...")
         return
 
-    if not (repo_path / ".git").is_dir():
-        print_error(f"{repo} is not a git repository. Skipping...")
-        return
+    # Print diagnostics before starting
+    print_git_diagnostics(repo_path)
+    
+    # Set up git authentication
+    setup_git_auth(repo_path)
 
     print_info(f"Processing {repo}...")
 
@@ -585,15 +690,19 @@ def process_repo(
         if proc.returncode == 0:
             print_info("  Committed version changes")
             print_info("  Pushing commit to remote (main)...")
-            if (
-                run_command(
-                    ["git", "push", "origin", "main"], cwd=repo_path, check=False
-                ).returncode
-                == 0
-            ):
+            push_result = run_command(
+                ["git", "push", "-v", "origin", "main"], 
+                cwd=repo_path, 
+                check=False
+            )
+            if push_result.returncode == 0:
                 print_info("  Pushed commit")
             else:
                 print_error(f"  Failed to push commit for {repo}")
+                print_error(f"  stdout: {push_result.stdout if push_result.stdout else '(empty)'}")
+                print_error(f"  stderr: {push_result.stderr if push_result.stderr else '(empty)'}")
+                # Print diagnostics again after failure
+                print_git_diagnostics(repo_path)
                 return
         else:
             print_warning(
@@ -609,15 +718,19 @@ def process_repo(
     )
 
     print_info(f"  Pushing tag {version_tag} to remote...")
-    if (
-        run_command(
-            ["git", "push", "-f", "origin", version_tag], cwd=repo_path, check=False
-        ).returncode
-        == 0
-    ):
+    push_result = run_command(
+        ["git", "push", "-v", "-f", "origin", version_tag], 
+        cwd=repo_path, 
+        check=False
+    )
+    if push_result.returncode == 0:
         print_info(f"  Successfully tagged and pushed {repo}")
     else:
         print_error(f"  Failed to push tag for {repo}")
+        print_error(f"  stdout: {push_result.stdout if push_result.stdout else '(empty)'}")
+        print_error(f"  stderr: {push_result.stderr if push_result.stderr else '(empty)'}")
+        # Print diagnostics again after failure
+        print_git_diagnostics(repo_path)
 
 
 def wait_for_repos(repos_to_wait: List[str], version_tag: str, cwd: Path):
@@ -680,6 +793,21 @@ def main():
 
     args = parser.parse_args()
     version_tag = args.version_tag
+
+    print_info("=== Initial Environment Diagnostics ===")
+    print_info(f"Working directory: {os.getcwd()}")
+    print_info(f"Script location: {Path(__file__).resolve()}")
+    
+    # Check for required environment variables
+    for var in ["GH_PAT", "GITHUB_TOKEN", "GH_TOKEN"]:
+        val = os.environ.get(var)
+        if val:
+            masked = val[:4] + "..." + val[-4:] if len(val) > 8 else "***"
+            print_info(f"{var}: {masked}")
+        else:
+            print_warning(f"{var}: not set")
+    
+    print_info("=== End Initial Diagnostics ===\n")
 
     if not version_tag.startswith("v"):
         print_warning(
