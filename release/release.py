@@ -75,7 +75,7 @@ REPOSITORIES PROCESSED:
 
 The script processes these repositories in order:
 - nodetool-core (always first, waited for by default)
-- nodetool-apple, nodetool-base, nodetool-comfy, nodetool-elevenlabs
+- nodetool-apple, nodetool-base, nodetool-elevenlabs
 - nodetool-fal, nodetool-huggingface, nodetool-lib-ml, nodetool-mlx
 - nodetool-lib-audio, nodetool-replicate, nodetool-whispercpp
 - nodetool (main desktop application)
@@ -234,7 +234,7 @@ REPOS = [
     "nodetool-core",
     "nodetool-apple",
     "nodetool-base",
-    "nodetool-comfy",
+    # "nodetool-comfy",
     "nodetool-elevenlabs",
     "nodetool-fal",
     "nodetool-huggingface",
