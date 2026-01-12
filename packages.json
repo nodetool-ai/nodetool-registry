@@ -3,76 +3,76 @@
     {
       "name": "nodetool-apple",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-apple/",
-      "wheel_count": 36,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "wheel_count": 38,
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-base",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-base/",
-      "wheel_count": 36,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "wheel_count": 38,
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-core",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-core/",
       "wheel_count": 32,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-elevenlabs",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-elevenlabs/",
-      "wheel_count": 34,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "wheel_count": 36,
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-fal",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-fal/",
-      "wheel_count": 34,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "wheel_count": 36,
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-huggingface",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-huggingface/",
-      "wheel_count": 34,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "wheel_count": 36,
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-lib-audio",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-lib-audio/",
       "wheel_count": 22,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-lib-ml",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-lib-ml/",
-      "wheel_count": 36,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "wheel_count": 38,
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-mlx",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-mlx/",
-      "wheel_count": 38,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "wheel_count": 40,
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-replicate",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-replicate/",
-      "wheel_count": 36,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "wheel_count": 38,
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nodetool-whispercpp",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-whispercpp/",
-      "wheel_count": 38,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "wheel_count": 40,
+      "last_updated": "2026-01-12T12:22:31Z"
     },
     {
       "name": "nunchaku",
       "url": "https://nodetool-ai.github.io/nodetool-registry/simple/nunchaku/",
       "wheel_count": 76,
-      "last_updated": "2026-01-12T12:18:00Z"
+      "last_updated": "2026-01-12T12:22:31Z"
     }
   ],
   "count": 12,
-  "generated": "2026-01-12T12:18:00Z"
+  "generated": "2026-01-12T12:22:31Z"
 }
