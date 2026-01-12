@@ -60,7 +60,7 @@ jobs:
           cd release
           uv sync
           uv run python release.py ${{ github.event.inputs.version }} \
-            --update-versions \
+            ${{ github.event.inputs.update_versions == 'true' && '--update-versions' || '' }} \
             --repo nodetool-core
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
@@ -138,7 +138,7 @@ jobs:
           cd release
           uv sync
           uv run python release.py ${{ github.event.inputs.version }} \
-            --update-versions \
+            ${{ github.event.inputs.update_versions == 'true' && '--update-versions' || '' }} \
             $([ -n "${{ github.event.inputs.repo }}" ] && echo "--repo ${{ github.event.inputs.repo }}")
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
