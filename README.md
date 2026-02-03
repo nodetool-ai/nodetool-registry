@@ -1,4 +1,4 @@
-# Nodetool Packs Registry
+# Nodetool Registry
 
 ## Overview
 
