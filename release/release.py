@@ -697,7 +697,7 @@ def process_repo(
             print_info("  Committed version changes")
             print_info("  Pushing commit to remote (main)...")
             push_result = run_command(
-                ["git", "push", "-v", "origin", "main"], cwd=repo_path, check=False
+                ["git", "push", "-v", "origin", "refs/heads/main"], cwd=repo_path, check=False
             )
             if push_result.returncode == 0:
                 print_info("  Pushed commit")
@@ -727,7 +727,7 @@ def process_repo(
 
     print_info(f"  Pushing tag {version_tag} to remote...")
     push_result = run_command(
-        ["git", "push", "-v", "-f", "origin", version_tag], cwd=repo_path, check=False
+        ["git", "push", "-v", "-f", "origin", f"refs/tags/{version_tag}"], cwd=repo_path, check=False
     )
     if push_result.returncode == 0:
         print_info(f"  Successfully tagged and pushed {repo}")
