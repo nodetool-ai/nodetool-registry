@@ -14,9 +14,9 @@ git clone https://github.com/nodetool-ai/nodetool-registry.git
 cd nodetool-registry
 
 # Clone all nodetool repositories
-for repo in nodetool-core nodetool-apple nodetool-base nodetool-comfy nodetool-elevenlabs \
-            nodetool-fal nodetool-huggingface nodetool-lib-ml nodetool-mlx \
-            nodetool-lib-audio nodetool-replicate nodetool-whispercpp \
+for repo in nodetool-core nodetool-apple \
+            nodetool-huggingface nodetool-lib-ml nodetool-mlx \
+            nodetool-whispercpp \
             nodetool; do
   git clone "https://github.com/nodetool-ai/$repo.git"
 done
@@ -43,7 +43,7 @@ gh auth login
 
 ```bash
 cd release
-python release.py v0.6.2-rc.20 --update-versions --repo nodetool-lib-audio
+python release.py v0.6.2-rc.20 --update-versions --repo nodetool-mlx
 ```
 
 ### Local Release (All Repositories)
@@ -82,15 +82,9 @@ The release process handles these repositories:
 |------------|------|-------|
 | nodetool-core | Python | Core library, released first |
 | nodetool-apple | Python | Apple Silicon nodes |
-| nodetool-base | Python | Base node collection |
-| nodetool-comfy | Python | ComfyUI integration |
-| nodetool-elevenlabs | Python | ElevenLabs API |
-| nodetool-fal | Python | FAL AI integration |
 | nodetool-huggingface | Python | HuggingFace models |
 | nodetool-lib-ml | Python | ML utilities |
 | nodetool-mlx | Python | MLX (Apple Silicon) |
-| nodetool-lib-audio | Python | Audio processing |
-| nodetool-replicate | Python | Replicate API |
 | nodetool-whispercpp | Python | Whisper.cpp bindings |
 | nodetool | TypeScript | Desktop app (web/electron) |
 

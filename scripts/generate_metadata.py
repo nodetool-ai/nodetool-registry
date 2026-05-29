@@ -66,13 +66,13 @@ Install packages from the NodeTool registry:
 
 ```bash
 # Install single package
-pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-base
+pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-apple
 
 # Install multiple packages
-pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-base nodetool-huggingface
+pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-apple nodetool-huggingface
 
 # Use as extra index (combines with PyPI)
-pip install --extra-index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-base
+pip install --extra-index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-apple
 ```
 
 ## Configuration
@@ -86,7 +86,7 @@ extra-index-url = https://nodetool-ai.github.io/nodetool-registry/simple/
 ### requirements.txt
 ```
 --extra-index-url https://nodetool-ai.github.io/nodetool-registry/simple/
-nodetool-base>=0.6.0
+nodetool-apple>=0.6.0
 nodetool-huggingface>=0.6.0
 ```
 
@@ -120,7 +120,7 @@ python scripts/build_index.py --output-dir docs/simple
 
 # Serve locally
 python -m http.server 8000 --directory docs
-# Then use: pip install --index-url http://localhost:8000/simple/ nodetool-base
+# Then use: pip install --index-url http://localhost:8000/simple/ nodetool-apple
 ```
 """
     

@@ -291,7 +291,7 @@ class NodeToolRegistryBuilder:
         print(f"\n🎉 Package index built successfully!")
         print(f"📍 Location: {output_path.absolute()}")
         print(
-            f"🌐 Usage: pip install --index-url file://{output_path.absolute()}/ nodetool-base"
+            f"🌐 Usage: pip install --index-url file://{output_path.absolute()}/ nodetool-apple"
         )
 
 

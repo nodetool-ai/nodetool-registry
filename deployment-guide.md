@@ -7,7 +7,7 @@ This guide covers setting up the centralized NodeTool package registry with GitH
 ## Architecture
 
 ```
-Individual Repos (nodetool-base, etc.)
+Individual Repos (nodetool-apple, etc.)
 ├── Tag push (v1.0.0)
 ├── GitHub Action builds wheel
 ├── Creates GitHub Release with wheel
@@ -66,7 +66,7 @@ GITHUB_TOKEN
 Copy `publish-wheel.yml` to each package repository:
 
 ```bash
-# For each repo (nodetool-base, nodetool-huggingface, etc.)
+# For each repo (nodetool-apple, nodetool-huggingface, etc.)
 mkdir -p .github/workflows/
 cp publish-wheel.yml .github/workflows/
 
@@ -89,15 +89,15 @@ In `nodetool-registry` repository settings:
 ### Test 1: Individual Package Release
 
 ```bash
-# Test with nodetool-base
-cd nodetool-base
+# Test with nodetool-apple
+cd nodetool-apple
 
 # Create test tag
 git tag v0.6.0
 git push origin v0.6.0
 
 # This should trigger:
-# 1. build-and-publish workflow in nodetool-base
+# 1. build-and-publish workflow in nodetool-apple
 # 2. Creates GitHub release with wheel
 # 3. Notifies nodetool-registry  
 # 4. Registry updates index
@@ -132,13 +132,13 @@ curl -X POST \
 
 ```bash
 # Test installation from registry
-pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-base
+pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-apple
 
 # Test with extra index (fallback to PyPI)
-pip install --extra-index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-base
+pip install --extra-index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-apple
 
 # Test specific version
-pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-base==0.6.0
+pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-apple==0.6.0
 ```
 
 ## Verification Steps
@@ -149,7 +149,7 @@ pip install --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ 
 curl https://nodetool-ai.github.io/nodetool-registry/simple/
 
 # View package index  
-curl https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-base/
+curl https://nodetool-ai.github.io/nodetool-registry/simple/nodetool-apple/
 
 # View metadata
 curl https://nodetool-ai.github.io/nodetool-registry/packages.json
@@ -158,11 +158,11 @@ curl https://nodetool-ai.github.io/nodetool-registry/packages.json
 ### Check Package Availability
 ```bash
 # Check if package resolves
-pip index versions nodetool-base \
+pip index versions nodetool-apple \
   --index-url https://nodetool-ai.github.io/nodetool-registry/simple/
 
 # Dry run install
-pip install --dry-run --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-base
+pip install --dry-run --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-apple
 ```
 
 ## Monitoring and Maintenance
@@ -207,13 +207,13 @@ echo "✅ Registry health check complete"
 ```bash
 # Check if release exists
 curl -H "Authorization: token $GITHUB_TOKEN" \
-  https://api.github.com/repos/nodetool-ai/nodetool-base/releases/tags/v0.6.0
+  https://api.github.com/repos/nodetool-ai/nodetool-apple/releases/tags/v0.6.0
 
 # Manually trigger index update
 curl -X POST \
   -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/nodetool-ai/nodetool-registry/dispatches \
-  -d '{"event_type":"package-released","client_payload":{"package":"nodetool-base","version":"0.6.0"}}'
+  -d '{"event_type":"package-released","client_payload":{"package":"nodetool-apple","version":"0.6.0"}}'
 ```
 
 **2. GitHub API rate limiting**
@@ -226,10 +226,10 @@ curl -H "Authorization: token $GITHUB_TOKEN" \
 **3. Package dependencies not resolving**
 ```bash
 # Verbose pip install to see resolution
-pip install -v --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-base
+pip install -v --index-url https://nodetool-ai.github.io/nodetool-registry/simple/ nodetool-apple
 
 # Check dependency tree
-pip show nodetool-base
+pip show nodetool-apple
 ```
 
 ### Recovery Procedures
@@ -246,7 +246,7 @@ curl -X POST \
 **Emergency fallback:**
 ```bash
 # Users can install directly from releases
-pip install https://github.com/nodetool-ai/nodetool-base/releases/download/v0.6.0/nodetool_base-0.6.0-py3-none-any.whl
+pip install https://github.com/nodetool-ai/nodetool-apple/releases/download/v0.6.0/nodetool_apple-0.6.0-py3-none-any.whl
 ```
 
 ## Benefits of This Architecture

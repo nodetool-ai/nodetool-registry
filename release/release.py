@@ -69,15 +69,15 @@ OPTIONS:
                        before processing other repositories to ensure they can
                        depend on the new version.
 
-    --repo             Only process this specific repository (e.g., nodetool-lib-audio)
+    --repo             Only process this specific repository (e.g., nodetool-mlx)
 
 REPOSITORIES PROCESSED:
 
 The script processes these repositories in order:
 - nodetool-core (always first, waited for by default)
-- nodetool-apple, nodetool-base, nodetool-elevenlabs
-- nodetool-fal, nodetool-huggingface, nodetool-lib-ml, nodetool-mlx
-- nodetool-lib-audio, nodetool-replicate, nodetool-whispercpp
+- nodetool-apple
+- nodetool-huggingface, nodetool-lib-ml, nodetool-mlx
+- nodetool-whispercpp
 - nodetool (main desktop application)
 
 EXAMPLES:
@@ -92,7 +92,7 @@ EXAMPLES:
     python release.py v1.2.3 --update-versions --no-wait-core
 
     # Release only a single repository
-    python release.py v1.2.3 --update-versions --repo nodetool-lib-audio
+    python release.py v1.2.3 --update-versions --repo nodetool-mlx
 
 PREREQUISITES:
 
@@ -236,15 +236,9 @@ def print_git_diagnostics(repo_path: Path):
 REPOS = [
     "nodetool-core",
     "nodetool-apple",
-    "nodetool-base",
-    # "nodetool-comfy",
-    "nodetool-elevenlabs",
-    "nodetool-fal",
     "nodetool-huggingface",
     "nodetool-lib-ml",
     "nodetool-mlx",
-    "nodetool-lib-audio",
-    "nodetool-replicate",
     "nodetool-whispercpp",
     "nodetool",
 ]
